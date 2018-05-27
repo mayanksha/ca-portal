@@ -8,4 +8,4 @@ encryption/
 
 #Local Configuration files
 config/local_config.ts
-config/cert.ts
+#config/cert.ts
