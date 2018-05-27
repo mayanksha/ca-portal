@@ -57,6 +57,7 @@ class Database {
 }
 	/*.catch( err => throw err);*/
 
+
 var db = new Database(Config, 'test');
 var app : express.Application = express();
 app.use(httpLogger('dev'));
