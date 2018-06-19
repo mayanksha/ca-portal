@@ -1,3 +1,12 @@
-<p>
-  login works!
-</p>
+<div class="bg" fxLayout="column" fxLayoutGap="50px" fxLayoutAlign="center center">
+  <div class="big-heading mat-display-2">
+    Campus Ambassador Portal
+  </div>
+  <img fxFlex="150px" fxFlex.lt-sm="100px" src="../../assets/logos/EcellIITKLOGOwhite.png" alt="E-Cell, IIT Kanpur" />
+  <div class="description mat-headline">
+    Why follow when you can lead?
+  </div>
+  <div class="fb-login-button" (click)="signInWithFacebook()" data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false"
+    data-use-continue-as="true">
+  </div>
+</div>
