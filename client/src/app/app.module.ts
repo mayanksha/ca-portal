@@ -3,6 +3,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
+import { FacebookModule } from 'ngx-facebook';
 import {
   MatIconModule,
   MatToolbarModule,
@@ -23,7 +24,7 @@ import { AuthGuard } from './auth.guard';
 import { HomeComponent } from './home/home.component';
 import { LogoutComponent } from './logout/logout.component';
 import { TopbarComponent } from './topbar/topbar.component';
-
+import { ScriptService } from './services/script.service';
 const fbLoginOptions: LoginOpt = {
   scope: 'email,pages_show_list',
   return_scopes: true,
@@ -66,14 +67,16 @@ export function provideConfig() {
     FormsModule,
     MatGridListModule,
     MatCardModule,
-    MatMenuModule
+    MatMenuModule,
+    FacebookModule.forRoot()
   ],
   providers: [
     AuthGuard,
     {
       provide: AuthServiceConfig,
       useFactory: provideConfig
-    }
+    },
+		ScriptService
   ],
   bootstrap: [AppComponent]
 })
