@@ -17,6 +17,7 @@ import {
 } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { FacebookModule } from 'ngx-facebook';
 import { SocialLoginModule, FacebookLoginProvider, AuthServiceConfig, LoginOpt } from 'angularx-social-login';
 
 import { LoginComponent } from './login/login.component';
@@ -61,6 +62,7 @@ export function provideConfig() {
     AppRoutingModule,
     HttpClientModule,
     FlexLayoutModule,
+    FacebookModule.forRoot(),
     SocialLoginModule,
     MatIconModule,
     MatToolbarModule,
