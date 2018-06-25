@@ -23,6 +23,8 @@ export class FbpostsComponent implements OnInit {
     this.feed.getAllPosts()
       .then((res) => {
         this.feeds = res.data;
+        setTimeout(() => (window as any).FB.XFBML.parse(), 0);
+        console.log(res);
       });
   }
 }

@@ -28,7 +28,12 @@ export class FbFeedService {
     // return this.fb.api('antaragni.iitk?fields=posts{message,full_picture,link,permalink_url}', 'get');
 		return this.loadPromise.then(() => {
 			/*return this.fb.api('ecelliitk/posts?fields=message,full_picture,link,permalink_url.limit(10)', 'get');*/
-			return this.fb.api('ecelltestingpage/posts?fields=message,full_picture,link,permalink_url.limit(10)', 'get');
+			return this.fb.api('ecelltestingpage/posts?fields=message,full_picture,link,permalink_url.limit(10)', 'get', 
+				{
+					//This is my page's access_token
+					"access_token" : "" 
+				}
+				);
 		})
   }
 
