@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { FacebookModule } from 'ngx-facebook';
+import { LoginService } from './services/login.service';
 import {
   MatIconModule,
   MatToolbarModule,
@@ -25,6 +26,7 @@ import { HomeComponent } from './home/home.component';
 import { LogoutComponent } from './logout/logout.component';
 import { TopbarComponent } from './topbar/topbar.component';
 import { ScriptService } from './services/script.service';
+import { FbpostsComponent } from './components/fbposts/fbposts.component';
 const fbLoginOptions: LoginOpt = {
   scope: 'email,pages_show_list',
   return_scopes: true,
@@ -51,6 +53,7 @@ export function provideConfig() {
     HomeComponent,
     LogoutComponent,
     TopbarComponent,
+    FbpostsComponent,
   ],
   imports: [
     BrowserModule,
@@ -71,12 +74,13 @@ export function provideConfig() {
     FacebookModule.forRoot()
   ],
   providers: [
+  	LoginService,
+		ScriptService,
     AuthGuard,
     {
       provide: AuthServiceConfig,
       useFactory: provideConfig
     },
-		ScriptService
   ],
   bootstrap: [AppComponent]
 })

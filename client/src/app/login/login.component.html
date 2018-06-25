@@ -6,9 +6,9 @@
   <div class="description mat-headline">
     Why follow when you can lead?
   </div>
-  <div class="fb-login-button" (click)="login()" data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="true">
-  </div>
+  <div class="fb-login-button" (click)="login()" data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="true" id="loginButton"></div>
 		<button (click)="getProfile()">Get Profile</button>
 		<button (click)="getFriends()">Get Friends</button>
 		<button (click)="logout()" target="_top">Logout</button>
+		<button (click)="feedComponent()" target="_top">Posts</button>
 </div>
