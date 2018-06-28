@@ -1,0 +1,79 @@
+.bg {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  height: 100vh;
+  width: 100vw;
+  padding: 10px;
+}
+
+.big-heading {
+  font-weight: 500;
+}
+
+.description {
+  font-weight: 500;
+}
+
+/* .ecell-logo {
+  height: 200px;
+} */
+
+
+#googleBtn {
+  background: white;
+  color: #444;
+  border-radius: 2px;
+  width: 190px;
+}
+
+#googleBtn:hover {
+  cursor: pointer;
+}
+
+span.gicon {
+  /* background: url(../../assets/images/google-logo.png) transparent 50% 50%/28px */
+    /* 28px no-repeat; */
+  width: 42px;
+  height: 42px;
+}
+
+span.buttonText {
+  padding-right: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  font-family: "Roboto", sans-serif;
+}
+.facebookLoginBtnMain {
+	background-color: #4267b2;
+	margin: 8px;
+	border: none;
+	display: inline-block;
+	text-decoration: none;
+	color: #fff;
+	font-family: sans-serif;
+	outline: none;
+	cursor: pointer;
+	box-sizing: border-box;
+}
+.xLargeFacebookBtn.facebookLoginBtnMain {
+	/*height: 40px;*/
+	font-size: 14px;
+	font-weight: 600;
+	padding: 6px;
+	border-radius: 4px;
+}
+
+.xLargeFacebookBtn.facebookLoginBtnMain svg {
+	height: 28px;
+}
+
+.xLargeFacebookBtn.facebookLoginBtnMain span {
+	height: 28px;
+	line-height: 28px;
+	padding: 0 16px;
+}
+.svg_facebook {
+	padding : 5px;
+}

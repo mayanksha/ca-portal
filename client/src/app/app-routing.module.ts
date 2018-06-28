@@ -1,0 +1,48 @@
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { LoginComponent } from './login/login.component';
+import { AuthGuard } from './auth.guard';
+import { HomeComponent } from './home/home.component';
+import { FbpostsComponent } from './components/fbposts/fbposts.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { OnLoginComponent } from './components/on-login/on-login.component';
+import { RegformComponent } from './components/regform/regform.component';
+const routes: Routes = [
+	{
+		path: 'login',
+		component: LoginComponent
+	},
+	{
+		path: 'home',
+		component: HomeComponent
+	},
+	{
+		path: 'fbposts',
+		component: FbpostsComponent
+	},
+	{
+		path: 'dashboard',
+		component: DashboardComponent
+	},
+	{
+		path: 'onFbLogin',
+		component: OnLoginComponent
+	},
+	{
+		path: 'regform',
+		component: RegformComponent
+	},
+	{
+		path: '**',
+		redirectTo: '/login',
+		pathMatch: 'full'
+	}
+];
+
+@NgModule({
+	imports: [RouterModule.forRoot(routes)],
+	providers: [AuthGuard],
+	exports: [RouterModule]
+})
+
+export class AppRoutingModule {}
