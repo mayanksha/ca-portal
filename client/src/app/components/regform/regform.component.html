@@ -1,82 +1,84 @@
-<div fxLayout="row" fxLayout.xs="column">
-	<mat-card fxFlex="60" fxFlexOffset="20">
+<div fxLayout="row">
+	<mat-card fxFlex="100" >
+		<form [formGroup]="form">
+			<mat-form-field class="mainContainer">
+				<input matInput placeholder="Startup Name" formControlName="startupName">
+				<mat-error *ngIf="emailFormControl.hasError('required')">
+					Startup Name is <strong>required</strong>
+				</mat-error>
+			</mat-form-field>
+			<br>	
 
-		<form #f="ngForm" (ngSubmit)="onSubmit(f.value)" class="form" method="post" action="http://localhost:3000/"  novalidate>
-			<!-- Text input-->
-
-			<mat-form-field class="form-group">
-				<label for="startupName">Startup Name :<span id="star"> *</span></label>	
-				<input type="text" class="border form-control" placeholder="Your startup's name" name="startupName" id="startupName" [(ngModel)]="f.value.startupName" #controlStartup="ngModel" required>
+			<mat-form-field>
+				<mat-select formControlName="numPersons" (change)="foo()" placeholder="Number of Persons in Team">
+					<mat-option *ngFor="let val of PersonsArray" [value]="val.id" >{{val.id}}</mat-option>
+				</mat-select>
 			</mat-form-field>
 
-			<div *ngIf="controlStartup.errors && (controlStartup.dirty)" class="alert alert-danger">Startup Name is required.</div>
 
-			<!-- Text input-->
-			<label for="persons">No. of team members :<span id="star"> *</span></label>
-			<select class="border form-control" name="persons" id="persons" [(ngModel)]="startupInstance.persons" (change)="createArr(f.value.persons)">
-				<option *ngFor="let person of personarr" [value]="person">{{person}}</option>
-			</select>
-			<div class="form-group" *ngFor="let num of contactArr; let i = index" style="margin-top : 0.8em;">
-				<label for="contactName" >Team Member {{i + 1}} :<span id="star"> *</span></label>	
-				<input type="text" class="border form-control" placeholder="Your Name" name="contactName{{i}}" id="contactName" [(ngModel)]="f.value.person" #controlContactName="ngModel" required>
-				<div class="radio">&emsp;
-					Gender of the Team Member :<span id="star"> *</span><br>&emsp;
-					<label>
-						<input type="radio" name="gender{{i}}" value="male" ngModel required checked>&nbsp;Male&emsp;&emsp;
-						<input type="radio" name="gender{{i}}" value="female" ngModel required>&nbsp;Female
-					</label>	
+			<div formArrayName="allPersons">
+				<div *ngFor="let personInput of form.get('allPersons').controls; let i=index" [formGroupName]="i">
+					<mat-form-field>
+						<input matInput placeholder="Person Name" formControlName="name">
+					</mat-form-field>
+					<!--<input placeholder="">-->
 				</div>
-				<div *ngIf="controlContactName.errors && (controlContactName.dirty)" class="alert alert-danger">Name is required.</div>
-			</div>
-
-			<!-- Text input-->
-
-			<div class="form-group">
-				<label for="email">Email Address :<span id="star"> *</span></label>	
-				<input type="email" class="border form-control" placeholder="Your e-mail address" name="email" id="email" [(ngModel)]="f.value.email" #controlEmail="ngModel" (blur)="emailValidation(f.value.email)" required>
-
-				<div *ngIf="(controlEmail.dirty) && emailValidation(f.value.email) " class="fades alert alert-danger">Valid Email is required.</div>
-			</div>
-
-			<!-- Text input-->
-
-			<div class="form-group">
-				<label for="phone">Contact Number :<span id="star"> *</span></label>	
-				<input type="text" class="border form-control" placeholder="Enter phone number" name="phone" [(ngModel)]="f.value.phone" #controlContact="ngModel" required>
-
-				<div *ngIf="(controlContact.dirty) && contactValidation(f.value.phone)" class="alert alert-danger">Valid Contact Number is required.</div>
-			</div>
-
-			<!-- Text input-->
-
-			<div class="form-group">
-				<label for="location" >Location :<span id="star"> *</span></label>	
-				<input type="text" class="border form-control" placeholder="Your Location" name="location" id="location" [(ngModel)]="f.value.loc" #controlLocation required>
-
-				<div *ngIf="controlLocation.errors && (controlLocation.dirty)" class="alert alert-danger">Location is required.</div>
 			</div>
 
 
-			<!-- Text input-->
+			<mat-form-field>
+				<input matInput placeholder="Email Address" formControlName="email">
+				<mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+					Please enter a valid email address
+				</mat-error>
+				<mat-error *ngIf="emailFormControl.hasError('required')">
+					Email is <strong>required</strong>
+				</mat-error>
+			</mat-form-field><br>
 
-			<div class="radio">
-				<div class="form-group">
-					<label>Select the event you are registering for :<span id="star"> *</span></label></div>
-				<label for="upbiz">
-					<input type="radio"  name="eventName" id="upbiz" value="upbiz" checked [(ngModel)]="startupInstance.eventName">
-					Upstart BIZ
-				</label><br>	
-				<label for="upsocha">
-					<input type="radio" name="eventName" id="upsocha" value="upsocha" [(ngModel)]="startupInstance.eventName" >
-					Upstart SoCha 
-				</label>	
-			</div>
-			<button  type="submit" class="btn btn-success" [disabled]="f.invalid" id="submit">Submit</button>
-		</form>
+			<mat-form-field>
+				<input matInput placeholder="Contact Number" formControlName="contactNo">
+				<mat-error *ngIf="emailFormControl.hasError('required')">
+					Phone Number is <strong>required</strong>
+				</mat-error>
+			</mat-form-field><br>
+
+
+			<mat-form-field>
+				<input matInput placeholder="Location" formControlName="location">
+			</mat-form-field><br>
+
+			<mat-radio-group class="example-radio-group">
+				<!--<mat-radio-button class="example-radio-button" *ngFor="let evt of eventNames" [value]="evt">
+			-  {{evt | uppercase}}
+			-</mat-radio-button>-->
+		Which Event would you like to take part in?
+		<mat-radio-button class="example-radio-button" value="upbiz" checked>
+			UpStart Biz 
+		</mat-radio-button>
+		<mat-radio-button class="example-radio-button" value="upsocha">
+			UpStart Socha
+		</mat-radio-button>
+		<mat-radio-button class="example-radio-button" value="upstartDelhi">
+			UpStart Delhi
+		</mat-radio-button>
+			</mat-radio-group>
+			<!--<div formGroupName="allPersons">
+		 -  <mat-form-field *ngFor="let val of Per">
+		 -    <input matInput placeholder="Startup Name" formControlName="person1">
+		 -  </mat-form-field>
+		 -</div>-->
+	 <!--<mat-form-field>
+		-  <input matInput placeholder="Startup Name" formControlName="">
+		-</mat-form-field>-->
+
+		</form>	
+		<br>
+		<button (click)="onSubmit()" type="submit" mat-raised-button color="primary" [disabled]="!form.valid">Submit</button>
+		<!--{{ form.value | json }}<br>
+			 -{{ form.valid | json }}<br>
+			 -<h4>Name change log</h4>
+			 -<div *ngFor="let name of nameChangeLog">{{name}}</div>-->
+
 	</mat-card>
-
 </div>
-
-<pre>
-	{{f.value | json }}
-</pre>

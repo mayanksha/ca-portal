@@ -14,7 +14,9 @@ import {
 	MatCardModule,
 	MatMenuModule,
 	MatSidenavModule,
-	MatSelectModule
+	MatSelectModule,
+	MatRadioModule,
+	MatDialogModule
 } from '@angular/material';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -33,6 +35,7 @@ import { FbpostsComponent } from './components/fbposts/fbposts.component';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
 import { OnLoginComponent } from './components/on-login/on-login.component';
 import { RegformComponent } from './components/regform/regform.component';
+import { ErrorStateMatcher } from '@angular/material/core';
 
 @NgModule({
 	declarations: [
@@ -50,6 +53,7 @@ import { RegformComponent } from './components/regform/regform.component';
 	imports: [
 		BrowserModule,
 		BrowserAnimationsModule,
+		ReactiveFormsModule,
 		AppRoutingModule,
 		HttpClientModule,
 		FlexLayoutModule,
@@ -65,12 +69,15 @@ import { RegformComponent } from './components/regform/regform.component';
 		MatMenuModule,
 		MatSidenavModule,
 		MatSelectModule,
+		MatRadioModule,
+		MatDialogModule
 	],
 	providers: [
 		LoginService,
 		ScriptService,
 		FbDataService,
 		AuthGuard,
+		ErrorStateMatcher
 	],
 	bootstrap: [AppComponent]
 })

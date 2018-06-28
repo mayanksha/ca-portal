@@ -1,29 +1,27 @@
-::-webkit-input-placeholder { /* WebKit, Blink, Edge */
-	color:    #BBB;
-	font-family : Roboto, Helvetica;
-	font-weight : 300;
+.example-radio-group {
+  display: inline-flex;
+  flex-direction: column;
 }
-:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-	color:    #BBB;
-	font-family : Roboto, Helvetica;
-	font-weight : 300;
-	opacity:  1;
+.example-radio-button {
+  margin: 5px;
 }
-::-moz-placeholder { /* Mozilla Firefox 19+ */
-	color:    #BBB;
-	font-family : Roboto, Helvetica;
-	font-weight : 300;
-	opacity:  1;
+.mat-form-field {
+	width : 60% !important;
 }
-:-ms-input-placeholder { /* Internet Explorer 10-11 */
-	color:    #BBB;
-	font-family : Roboto, Helvetica;
-	font-weight : 300;
-}
-::-ms-input-placeholder { /* Microsoft Edge */
-	color:    #BBB;
-	font-family : Roboto, Helvetica;
-	font-weight : 300;
-}
-
-
+/*.mat-card {
+ *    background-repeat: stretch;
+ *}
+ *.mat-card::before {
+ *    -webkit-filter: blur(5px);
+ *  -moz-filter: blur(5px);
+ *  -o-filter: blur(5px);
+ *  -ms-filter: blur(5px);
+ *  filter: blur(5px); 
+ *
+ *}*/
+/*.mainContainer {
+ *    display: flex;
+ *    flex-direction: row;
+ *    flex-wrap: wrap;
+ *    align-items: center;
+ *}*/

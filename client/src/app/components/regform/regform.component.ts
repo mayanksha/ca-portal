@@ -1,6 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { FormControl } from '@angular/forms';
+import { FormArray,
+	FormGroup,
+	FormBuilder,
+	Validators,
+	ValidatorFn,
+	FormControl,
+	NgForm,
+	FormGroupDirective
+} from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material/core';
+
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+	isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+		const isSubmitted = form && form.submitted;
+		return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+	}
+}
 
 interface Startup {
 	startupName: string;
@@ -11,76 +28,113 @@ interface Startup {
 	loc: string;
 	eventName: string;
 }
-
+interface Persons {
+	id: number;
+	name?: string;
+	gender?: string;
+}
 @Component({
 	selector: 'app-regform',
 	templateUrl: './regform.component.html',
-	styleUrls: ['./regform.component.css']
+	styleUrls: ['./regform.component.css'],
 })
-export class RegformComponent implements OnInit {
+export class RegformComponent implements OnInit, AfterViewInit {
 	constructor (
+		public dialogRef: MatDialogRef<RegformComponent>,
 		private http: HttpClient,
-	) {}
-
-	postResponse: any;
-	public startupInstance: Startup;
-	public personarr: number[] = [1, 2, 3, 4, 5];
-	serverUrl = 'http://13.126.100.70/form-data';
-	contactReps = 1;
-	contactArr = [1];
-	headers = new Headers({
-		'Content-Type' : 'application/json',
-		'Access-Control-Allow-Origin' : '*',
-	});
-
-	logger(val): void {
-		this.contactReps = Number(val);
-		// console.log(this.contactReps);
-		// console.log(`Team member value is ` + val);
-	}
-
-	createArr(val): void {
-		const arr = [];
-		for (let i = 1; i <= val; i++) {
-		arr.push(i);
+		private fb: FormBuilder
+	) {
+		this.matcher = new MyErrorStateMatcher();
+		for (let i = 1; i <= this.maxPersons; i++) {
+			this.PersonsArray.push({'id': i, 'name' : ''});
 		}
-		this.contactArr = arr;
-		// console.log(this.contactArr);
 	}
+	form: FormGroup;
+	maxPersons = 5;
+	PersonsArray: Persons[] = [];
+	nameChangeLog = [];
+	eventNames = ['upbiz', 'upstart'];
+	matcher: MyErrorStateMatcher;
+	emailFormControl = new FormControl('', [
+		Validators.email,
+		Validators.required,
+	]);
 
-	onSubmit(form) {
-		// console.log(form);
-		return this.http.post(this.serverUrl, form).subscribe(
-			(res) => {
-				this.postResponse = res;
-				console.log('Value Received:  ', res);
-				document.write('<h3 style="margin : auto; font-family : Roboto ; text-align : center"></h3>');
-			}
-		);
+	httpOptions = {
+		headers : new HttpHeaders({
+			'Content-Type': 'application/json',
+			'Access-Control-Allow-Origin': 'http://localhost:8000/*'
+		})
+	};
+	postEndpoint = 'http://localhost:8000/api/register';
+	onNoClick(): void {
+		this.dialogRef.close();
 	}
-
-	emailValidation(address): boolean {
-		/*tslint:disable*/
-		const regex = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
-		return (regex.test(address) ? false : true);
-	}
-		/*tslint:enable*/
-
-	contactValidation(contact): boolean {
-		const regex = new RegExp(/^([0|\+[0-9]{1,5})?([7-9][0-9]{9})$/);
-		return (regex.test(contact) ? false : true);
-	}
-
 	ngOnInit() {
-		this.startupInstance = {
-			startupName : '',
-			persons : this.contactReps,
-			teamMem : [' '],
-			contactNo : '',
-			email : '',
-			loc : '',
-			eventName : 'upbiz'
-		};
+		this.form = this.fb.group({
+			startupName : ['', Validators.required],
+			email : ['',
+				[Validators.required,
+					Validators.email
+				]],
+			numPersons : this.PersonsArray[0].id,
+			/*allPersons: this.fb.array([this.fb.group(this.PersonsArray[0])]),*/
+			allPersons: this.fb.array([
+				this.fb.group(this.PersonsArray[0])
+			]),
+			contactNo: ['',
+				Validators.compose([Validators.required, Validators.pattern('[0-9]{10}')])],
+			location: ['', Validators.required],
+			eventName: ['upbiz']
+		});
+		this.onSelectChange();
 	}
+
+	ngAfterViewInit() {
+		setTimeout(() => this.setPersonInputs(this.PersonsArray, 1), 0);
+		console.log(this.form.get('allPersons'));
+	}
+
+	get PersonsFormArray(): FormArray {
+		return this.form.get('allPersons') as FormArray;
+	}
+
+	setPersonInputs(persons: Persons[], numPersons: number) {
+		const personFGs: FormGroup[] = [];
+		for (let i = 0; i < numPersons; i++) {
+			personFGs.push(this.fb.group({
+				'id' : persons[i].id,
+				'name' : [persons[i].name, Validators.required],
+			}));
+		}
+		const personFormArray = this.fb.array(personFGs);
+		this.form.setControl('allPersons', personFormArray);
+	}
+
+	onSelectChange() {
+
+		// Was meant for PatchValue but it's useless here
+		const previousForm = {
+			'startupName' : this.form.get('startupName'),
+			'email': this.form.get('email'),
+			'contactNo': this.form.get('contactNo'),
+			'location': this.form.get('location')
+		};
+		const nameControl = this.form.get('numPersons');
+		nameControl.valueChanges.forEach(e =>
+			this.setPersonInputs(this.PersonsArray, e));
+	}
+
+	onSubmit() {
+		console.log(this.form.value);
+		return this.http.post(this.postEndpoint, this.form.value).toPromise().then(val =>
+			console.log('Value Posted Successfully')
+		)
+		.catch(err => console.error(err));
+	}
+	/*  phoneNoValidator(): ValidatorFn {
+	 *
+	 *  }*/
+
 }
 
