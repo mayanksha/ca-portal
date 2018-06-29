@@ -15,7 +15,7 @@ export class LoginService {
 	loadPromise: Promise<any>;
 	options: LoginOptions = {
 		scope:
-		'public_profile,user_birthday,user_likes,user_posts,user_gender,user_link,email',
+		'public_profile,email',
 		return_scopes: true,
 		enable_profile_selector: true
 	};

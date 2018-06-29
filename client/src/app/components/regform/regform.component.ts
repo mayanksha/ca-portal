@@ -70,7 +70,7 @@ export class RegformComponent implements OnInit, AfterViewInit {
 			'Access-Control-Allow-Origin': 'http://localhost:8000/*'
 		})
 	};
-	postEndpoint = 'http://localhost:8000/api/register';
+	postEndpoint = 'https://13.126.187.150/api/register/';
 	onNoClick(): void {
 		this.dialogRef.close();
 	}

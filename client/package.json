@@ -6,6 +6,7 @@
     "start": "ng serve",
     "starthttps": "ng serve --ssl true --ssl-key ~/git/intern/server/encryption/localhost.key --ssl-cert ~/git/intern/server/encryption/localhost.crt",
     "build": "ng build",
+    "prod": "ng build --prod --aot --base-href ./",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

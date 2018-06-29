@@ -29,7 +29,9 @@ export class LoginComponent implements OnInit {
 		private router: Router,
 		private loginService: LoginService,
 		private dataService: FbDataService
-	) {}
+	) {
+		particlesJS.load('particles-js', '../../assets/particlesjs-config.json', null);
+	}
 
 	login() {
 		this.loginService.performLogin()
@@ -70,6 +72,5 @@ export class LoginComponent implements OnInit {
 					console.log('User wasn\'t logged in!');
 				}
 			});
-		particlesJS.load('particles-js', '../../assets/particlesjs-config.json', null);
 	}
 }
