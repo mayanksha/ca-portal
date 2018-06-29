@@ -70,6 +70,6 @@ export class LoginComponent implements OnInit {
 					console.log('User wasn\'t logged in!');
 				}
 			});
-		// particlesJS.load('particles-js', '../../assets/particlesjs-config.json', null);
+		particlesJS.load('particles-js', '../../assets/particlesjs-config.json', null);
 	}
 }
