@@ -1,4 +1,4 @@
-<div fxLayout="row">
+<div fxLayout="row" *ngIf="!success">
 	<mat-card fxFlex="100" >
 		<form [formGroup]="form">
 			<mat-form-field class="mainContainer">
@@ -48,20 +48,17 @@
 				<input matInput placeholder="Location" formControlName="location">
 			</mat-form-field><br>
 
-			<mat-radio-group class="example-radio-group">
-				<!--<mat-radio-button class="example-radio-button" *ngFor="let evt of eventNames" [value]="evt">
-			-  {{evt | uppercase}}
-			-</mat-radio-button>-->
-		Which Event would you like to take part in?
-		<mat-radio-button class="example-radio-button" value="upbiz" checked>
-			UpStart Biz 
-		</mat-radio-button>
-		<mat-radio-button class="example-radio-button" value="upsocha">
-			UpStart Socha
-		</mat-radio-button>
-		<mat-radio-button class="example-radio-button" value="upstartDelhi">
-			UpStart Delhi
-		</mat-radio-button>
+			<mat-radio-group formControlName="eventName" class="example-radio-group">
+				Which Event would you like to take part in?
+				<mat-radio-button class="example-radio-button" value="upbiz" checked>
+					UpStart Biz 
+				</mat-radio-button>
+				<mat-radio-button class="example-radio-button" value="upsocha">
+					UpStart Socha
+				</mat-radio-button>
+				<mat-radio-button class="example-radio-button" value="upstartDelhi">
+					UpStart Delhi
+				</mat-radio-button>
 			</mat-radio-group>
 			<!--<div formGroupName="allPersons">
 		 -  <mat-form-field *ngFor="let val of Per">
@@ -76,9 +73,10 @@
 		<br>
 		<button (click)="onSubmit()" type="submit" mat-raised-button color="primary" [disabled]="!form.valid">Submit</button>
 		<!--{{ form.value | json }}<br>
-			 -{{ form.valid | json }}<br>
-			 -<h4>Name change log</h4>
-			 -<div *ngFor="let name of nameChangeLog">{{name}}</div>-->
+		-{{ form.valid | json }}<br>
+		-<h4>Name change log</h4>
+		-<div *ngFor="let name of nameChangeLog">{{name}}</div>-->
 
 	</mat-card>
 </div>
+<app-ticks *ngIf="success" [success]="success"></app-ticks>

@@ -1,6 +1,8 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { TicksComponent } from '../ticks/ticks.component';
+
 import { FormArray,
 	FormGroup,
 	FormBuilder,
@@ -21,11 +23,11 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 
 interface Startup {
 	startupName: string;
-	persons: number;
-	teamMem: object;
+	numPersons: number;
+	allPersons: Persons[];
 	contactNo: string;
 	email: string;
-	loc: string;
+	location: string;
 	eventName: string;
 }
 interface Persons {
@@ -53,12 +55,13 @@ export class RegformComponent implements OnInit, AfterViewInit {
 	maxPersons = 5;
 	PersonsArray: Persons[] = [];
 	nameChangeLog = [];
-	eventNames = ['upbiz', 'upstart'];
 	matcher: MyErrorStateMatcher;
 	emailFormControl = new FormControl('', [
 		Validators.email,
 		Validators.required,
 	]);
+	// 0 = showForm, 1 = Success, 2 = Failure
+	success = 0;
 
 	httpOptions = {
 		headers : new HttpHeaders({
@@ -127,14 +130,18 @@ export class RegformComponent implements OnInit, AfterViewInit {
 
 	onSubmit() {
 		console.log(this.form.value);
-		return this.http.post(this.postEndpoint, this.form.value).toPromise().then(val =>
-			console.log('Value Posted Successfully')
+		return this.http.post(this.postEndpoint, this.form.value).toPromise().then(val => {
+				this.success = 1;
+				console.log('Value Posted Successfully');
+			}
 		)
-		.catch(err => console.error(err));
+		.catch(err => {
+			this.success = 2;
+			/*console.error(err)*/
+		});
 	}
 	/*  phoneNoValidator(): ValidatorFn {
 	 *
 	 *  }*/
-
 }
 

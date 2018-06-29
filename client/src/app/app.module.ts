@@ -36,6 +36,7 @@ import { SidenavComponent } from './components/sidenav/sidenav.component';
 import { OnLoginComponent } from './components/on-login/on-login.component';
 import { RegformComponent } from './components/regform/regform.component';
 import { ErrorStateMatcher } from '@angular/material/core';
+import { TicksComponent } from './components/ticks/ticks.component';
 
 @NgModule({
 	declarations: [
@@ -49,6 +50,7 @@ import { ErrorStateMatcher } from '@angular/material/core';
 		SidenavComponent,
 		OnLoginComponent,
 		RegformComponent,
+		TicksComponent,
 	],
 	imports: [
 		BrowserModule,

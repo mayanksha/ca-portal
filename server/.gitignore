@@ -1,0 +1,11 @@
+#Vim swap files
+*.swp
+*.swq
+
+#Directories
+node_modules/
+encryption/
+
+#Local Configuration files
+config/local_config.ts
+#config/cert.ts

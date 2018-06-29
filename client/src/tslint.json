@@ -16,6 +16,9 @@
 		"indent" : [
 			true,
 			"tabs"
+		],
+		"no-input-rename" : [
+			false
 		]
     }
 }

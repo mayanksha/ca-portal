@@ -1,0 +1,12 @@
+<div fxLayout="row" *ngIf="!success">
+	<mat-card fxFlex="100" >
+		<div *ngIf="greenOrRed === 1">
+			<img src={{green}}><br>
+			<h4>{{successString}}</h4>
+		</div>
+		<div *ngIf="greenOrRed === 2">
+			<img src={{red}}><br>
+			<h3>{{failureString}}</h3>
+		</div>
+	</mat-card>
+</div>
