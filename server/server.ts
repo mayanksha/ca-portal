@@ -4,7 +4,6 @@ import express = require('express');
 import bodyParser = require('body-parser');
 import process = require('process');
 import crypto = require('crypto');
-import passport = require('passport');
 import session = require('express-session');
 import cors = require('cors');
 //Interfaces
@@ -70,8 +69,6 @@ app.use(httpLogger('dev'));
 app.use(session({ secret : Config.sessionSecret }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended : false }));
-app.use(passport.initialize());
-app.use(passport.session());
 
 app.use(cors());
 app.get('/', (req : express.Request, res : express.Response) => {
@@ -92,7 +89,8 @@ app.post('/api/register', (req : express.Request, res : express.Response) => {
 			db.escape(req.body.numPersons) +  "," +
 			db.escape(req.body.contactNo) +  "," +
 			db.escape(req.body.location) +  "," +
-			db.escape(req.body.eventName) +  ");";
+			db.escape(req.body.eventName) +  "," +
+			db.escape(req.body.facebookID) +  ");";
 
 			db.query(insertQuery)
 			.then((res : any) => {

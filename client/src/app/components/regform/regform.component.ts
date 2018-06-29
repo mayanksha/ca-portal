@@ -62,6 +62,7 @@ export class RegformComponent implements OnInit, AfterViewInit {
 	]);
 	// 0 = showForm, 1 = Success, 2 = Failure
 	success = 0;
+	facebookID = localStorage.getItem('userID');
 
 	httpOptions = {
 		headers : new HttpHeaders({
@@ -88,7 +89,8 @@ export class RegformComponent implements OnInit, AfterViewInit {
 			contactNo: ['',
 				Validators.compose([Validators.required, Validators.pattern('[0-9]{10}')])],
 			location: ['', Validators.required],
-			eventName: ['upbiz']
+			eventName: ['upbiz'],
+			facebookID : [this.facebookID]
 		});
 		this.onSelectChange();
 	}
