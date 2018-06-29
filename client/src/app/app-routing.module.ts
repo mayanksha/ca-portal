@@ -16,14 +16,14 @@ const routes: Routes = [
 		path: 'home',
 		component: HomeComponent
 	},
-	{
-		path: 'fbposts',
-		component: FbpostsComponent
-	},
-	{
-		path: 'dashboard',
-		component: DashboardComponent
-	},
+	/*{
+	 *  path: 'fbposts',
+	 *  component: FbpostsComponent
+	 *},*/
+	/*{
+	 *  path: 'dashboard',
+	 *  component: DashboardComponent
+	 *},*/
 	{
 		path: 'onFbLogin',
 		component: OnLoginComponent
