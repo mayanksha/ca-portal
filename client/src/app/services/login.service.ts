@@ -31,7 +31,7 @@ export class LoginService {
 			.then(() => {
 				/*if((window as any).FB)
 				 *  return Promise.resolve(true);*/
-				console.log('FB INIT Called inside LoginService');
+				/*console.log('FB INIT Called inside LoginService');*/
 				this.fb.init(params);
 			})
 			.catch(err => console.error(err));
@@ -62,9 +62,10 @@ export class LoginService {
 		return this.loadPromise.then(() =>
 			this.fb.getLoginStatus().then((res: LoginStatus) => {
 				if (res.status === 'connected') {
-					console.log(res.authResponse);
+					/*console.log(res.authResponse);*/
 					this.token = res.authResponse.accessToken;
 					localStorage.setItem('accessToken', this.token);
+					localStorage.setItem('userID', res.authResponse.userID);
 					/*localStorage.setItem('user', {
 					 *  'userId' : res.authResponse.userID,
 					 *  'token' : res.authResponse.accessToken

@@ -44,7 +44,7 @@ export class LoginComponent implements OnInit {
 
 	getProfile = () => {
 		this.dataService.fetchProfileData()
-			.then(console.log);
+			.then();
 	}
 
 	logout() {

@@ -7,7 +7,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 	styleUrls: ['./ticks.component.css']
 })
 export class TicksComponent implements OnInit {
-	@Input('success') greenOrRed: number;
+	@Input() greenOrRed = 0;
 	green = '../../../assets/green.png';
 	red = '../../../assets/red.png';
 	successString = 'Thanks for Registering with us!';

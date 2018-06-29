@@ -81,7 +81,7 @@ app.post('/api/register', (req : express.Request, res : express.Response) => {
 	const Persons : Persons[] = req.body.allPersons;
 
 	let insertQuery = `INSERT INTO \`${db.database}\`.\`${mainDb}\` ` +
-		`(\`startupName\`, \`email\`, \`numPersons\`, \`phone\`, \`location\`, \`eventName\`)` +
+		`(\`startupName\`, \`email\`, \`numPersons\`, \`phone\`, \`location\`, \`eventName\`, \`facebookID\`)` +
 		` VALUES (` +
 			/*db.escape('') + "," +*/
 			db.escape(req.body.startupName) +  "," +
@@ -107,20 +107,28 @@ app.post('/api/register', (req : express.Request, res : express.Response) => {
 
 				return db.query(mappingQuery)
 					.then(res => res)
-					.catch(console.error);
+					.catch(err => {
+						console.log(err);
+						res.status(500);
+						res.end(JSON.stringify("false"));
+					});
 			})
 			.then((result : any) => {
 				if(result.affectedRows == Persons.length)
 					res.status(200);
-					res.end(JSON.stringify(true));
+				res.end(JSON.stringify(true));
 			})
-			.catch(err => console.log(err));
-		})
-	app.use('/*', (req : express.Request, res : express.Response) => {
-		res.status(404);
-		res.end('404 : Not found');
-	})
-	app.listen(8000, (err : express.ErrorRequestHandler) => {
-		if(err) throw err;
-		else console.log("server listending on 8000");
-	})
+			.catch(err => {
+				console.log(err);
+				res.status(500);
+				res.end(JSON.stringify("false"));
+			});
+})
+app.use('/*', (req : express.Request, res : express.Response) => {
+	res.status(404);
+	res.end('404 : Not found');
+})
+app.listen(8000, (err : express.ErrorRequestHandler) => {
+	if(err) throw err;
+	else console.log("server listending on 8000");
+})
