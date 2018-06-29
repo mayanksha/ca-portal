@@ -63,7 +63,7 @@ class Database {
 /*.catch( err => throw err);*/
 
 
-var db = new Database(Config, 'ca-portal');
+var db = new Database(Config, 'registrations');
 var app : express.Application = express();
 app.use(httpLogger('dev'));
 app.use(session({ secret : Config.sessionSecret }));

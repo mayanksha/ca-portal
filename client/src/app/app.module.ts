@@ -32,7 +32,6 @@ import { LogoutComponent } from './logout/logout.component';
 import { TopbarComponent } from './topbar/topbar.component';
 import { ScriptService } from './services/script.service';
 import { FbpostsComponent } from './components/fbposts/fbposts.component';
-import { SidenavComponent } from './components/sidenav/sidenav.component';
 import { OnLoginComponent } from './components/on-login/on-login.component';
 import { RegformComponent } from './components/regform/regform.component';
 import { ErrorStateMatcher } from '@angular/material/core';
@@ -47,7 +46,6 @@ import { TicksComponent } from './components/ticks/ticks.component';
 		LogoutComponent,
 		TopbarComponent,
 		FbpostsComponent,
-		SidenavComponent,
 		OnLoginComponent,
 		RegformComponent,
 		TicksComponent,

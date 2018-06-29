@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TopbarComponent } from '../topbar/topbar.component';
 import { FbpostsComponent } from '../components/fbposts/fbposts.component';
-import { SidenavComponent } from '../components/sidenav/sidenav.component';
 import { FbDataService } from '../services/fb-data.service';
 import { LoginService } from '../services/login.service';
 
