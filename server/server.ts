@@ -6,6 +6,8 @@ import process = require('process');
 import crypto = require('crypto');
 import session = require('express-session');
 import cors = require('cors');
+
+import assert = require('assert');
 //Interfaces
 import { dbConfig } from './interfaces/dbConfig';
 import { Startup, Persons } from './interfaces/startup';
@@ -24,6 +26,11 @@ function diff_time(a : Date, b : Date) : string {
 	return (days.toString())+ ":" + (hrs%24).toString() + ":" + ((min%24)%60).toString();
 }
 
+function handleError(error) {
+	if (error instanceof Error){
+		console.error(error);
+	}
+}
 function enclose(val : any) {
 	return `'` + val.toString() + `'`;
 }
@@ -71,10 +78,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended : false }));
 
 app.use(cors());
-app.get('/', (req : express.Request, res : express.Response) => {
-	res.end("Working!");	
-})
-
 app.post('/api/register', (req : express.Request, res : express.Response) => {
 	const mainDb = 'upstart';
 	const mappingTable = 'id_person_mapping';
@@ -124,9 +127,77 @@ app.post('/api/register', (req : express.Request, res : express.Response) => {
 				res.end(JSON.stringify("false"));
 			});
 })
+app.get('/', (req, res)=> {
+	const query = 'select * from registrations.upstart';
+	db.query(query).then((e : any) => {
+		console.log(Array.from(e).length);
+	});
+})
+app.post('/api/postLink', (req : express.Request, res : express.Response) => {
+	console.log(req.body);
+	assert.ok(req.body.facebookID);
+	assert.ok(req.body.link);
+
+	const link = db.escape(req.body.link);
+	const facebookID = db.escape(req.body.facebookID);
+
+	// Links must always be a string and less than 1000 chars
+	assert.ok(typeof req.body.link === 'string' && req.body.link.toString().length <= 1000);
+
+	const linksTable = 'links';
+
+	// MySQL Queries
+	let checkQuery = `SELECT * FROM ${linksTable} WHERE` + facebookID + ';';
+	let updateQuery = `UPDATE ${linksTable} SET \`link\`=` + 
+		link + ` WHERE \`facebookID\`=${facebookID};`; 
+	let insertQuery	= `INSERT INTO ${linksTable} (\`facebookID\`, \`link\`) VALUES` + '(' +
+		facebookID + ',' +
+		link + ');';
+
+	db.query(checkQuery)
+		.then((res: any) => Array.from(res).length === 0)
+		.then((e: boolean) => {
+			if (e === true)
+				return db.query(insertQuery);
+			else
+				return db.query(updateQuery);
+		})
+		.then((result: any) => {
+			if(result.affectedRows !== 1)
+				throw new Error(linksTable + ' had more than two entries with same facebookID');
+			else {
+				res.status(200);
+				res.end();
+			}
+		})
+		.catch(err => {
+			if (err){
+				console.error(err);
+				res.status(500);
+				res.end();
+			}
+		});
+})
 app.use('/*', (req : express.Request, res : express.Response) => {
 	res.status(404);
 	res.end('404 : Not found');
+})
+app.use('/*', (err, req, res, next) => {
+	// Assertions errors are wrong user inputs
+	if(err.name === 'SyntaxError' || err.code === 'ERR_ASSERTION'){
+		console.error(err);
+
+		// Bad HTTP Request
+		res.status(400);
+		res.end();
+	}
+	else {
+		console.error(err.code);
+
+		// Internal Server Error 
+		res.status(500);
+		res.end();
+	}
 })
 app.listen(8000, (err : express.ErrorRequestHandler) => {
 	if(err) throw err;

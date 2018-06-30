@@ -16,26 +16,28 @@ import {
 	MatSidenavModule,
 	MatSelectModule,
 	MatRadioModule,
-	MatDialogModule
+	MatDialogModule,
+	MatProgressSpinnerModule
 } from '@angular/material';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FacebookModule } from 'ngx-facebook';
 import { AppComponent } from './app.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { LoginComponent } from './login/login.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { LoginComponent } from './components/login/login.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AuthGuard } from './auth.guard';
-import { HomeComponent } from './home/home.component';
-import { LogoutComponent } from './logout/logout.component';
-import { TopbarComponent } from './topbar/topbar.component';
+import { HomeComponent } from './components/home/home.component';
+import { LogoutComponent } from './components/logout/logout.component';
+import { TopbarComponent } from './components/topbar/topbar.component';
 import { ScriptService } from './services/script.service';
 import { FbpostsComponent } from './components/fbposts/fbposts.component';
 import { OnLoginComponent } from './components/on-login/on-login.component';
 import { RegformComponent } from './components/regform/regform.component';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { TicksComponent } from './components/ticks/ticks.component';
+import { LinkSubmissionComponent } from './components/link-submission/link-submission.component';
 
 @NgModule({
 	declarations: [
@@ -49,6 +51,7 @@ import { TicksComponent } from './components/ticks/ticks.component';
 		OnLoginComponent,
 		RegformComponent,
 		TicksComponent,
+		LinkSubmissionComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -70,7 +73,8 @@ import { TicksComponent } from './components/ticks/ticks.component';
 		MatSidenavModule,
 		MatSelectModule,
 		MatRadioModule,
-		MatDialogModule
+		MatDialogModule,
+		MatProgressSpinnerModule
 	],
 	providers: [
 		LoginService,

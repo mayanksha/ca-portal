@@ -44,7 +44,7 @@ export class LoginService {
 				.then((res: LoginResponse) => {
 					this.token = res.authResponse.accessToken;
 					localStorage.setItem('accessToken', this.token);
-					localStorage.setItem('userID', res.authResponse.userID);
+					localStorage.setItem('facebookID', res.authResponse.userID);
 					return Promise.resolve(res);
 				})
 				.catch(err => Promise.reject(err));
@@ -65,7 +65,7 @@ export class LoginService {
 					/*console.log(res.authResponse);*/
 					this.token = res.authResponse.accessToken;
 					localStorage.setItem('accessToken', this.token);
-					localStorage.setItem('userID', res.authResponse.userID);
+					localStorage.setItem('facebookID', res.authResponse.userID);
 					/*localStorage.setItem('user', {
 					 *  'userId' : res.authResponse.userID,
 					 *  'token' : res.authResponse.accessToken

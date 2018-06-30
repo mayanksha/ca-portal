@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { RegformComponent } from '../regform/regform.component';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { LoginService } from '../../services/login.service';
+import { FbDataService } from '../../services/fb-data.service';
 @Component({
 	selector: 'app-on-login',
 	templateUrl: './on-login.component.html',
@@ -12,10 +13,11 @@ export class OnLoginComponent implements OnInit {
 	/*heroForm = new FormGroup({
 	 *  name: new FormControl()
 	 *});*/
-
+	userName: string;
 	constructor(public dialog: MatDialog,
 		private loginService: LoginService,
-		private router: Router
+		private router: Router,
+		private dataService: FbDataService
 	) {
 		this.loginService.checkLogin()
 			.then(e => {
@@ -25,6 +27,13 @@ export class OnLoginComponent implements OnInit {
 					console.log('You are successfully logged in!');
 				}
 			});
+		this.userName = localStorage.getItem('name');
+		if (!this.userName) {
+			this.dataService.fetchProfileData()
+				.then((data: any) => {
+				localStorage.setItem('name', data.name);
+			});
+		}
 	}
 	ngOnInit() {
 	}
@@ -37,6 +46,6 @@ export class OnLoginComponent implements OnInit {
 		});
 	}
 	openUploader() {
-
+		this.dataService.fetchProfileData().then(console.log).catch(console.error);
 	}
 }
