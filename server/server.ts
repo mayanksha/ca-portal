@@ -69,7 +69,6 @@ class Database {
 }
 /*.catch( err => throw err);*/
 
-
 var db = new Database(Config, 'registrations');
 var app : express.Application = express();
 app.use(httpLogger('dev'));
@@ -79,42 +78,81 @@ app.use(bodyParser.urlencoded({ extended : false }));
 
 app.use(cors());
 app.post('/api/register', (req : express.Request, res : express.Response) => {
-	const mainDb = 'upstart';
+	assert.ok(req.body.startupName);
+	assert.ok(req.body.email);
+	assert.ok(req.body.numPersons);
+	assert.ok(req.body.contactNo);
+	assert.ok(req.body.location);
+	assert.ok(req.body.eventName);
+	assert.ok(req.body.facebookID);
+
+	const startupName = db.escape(req.body.startupName);
+	const email = db.escape(req.body.email);
+	const numPersons = db.escape(req.body.numPersons);
+	const contactNo = db.escape(req.body.contactNo);
+	const location = db.escape(req.body.location);
+	const eventName = db.escape(req.body.eventName);
+	const facebookID = db.escape(req.body.facebookID);
+
+	const infoTable = 'upstart';
 	const mappingTable = 'id_person_mapping';
 	const Persons : Persons[] = req.body.allPersons;
 
-	let insertQuery = `INSERT INTO \`${db.database}\`.\`${mainDb}\` ` +
+	let checkQuery = `SELECT * FROM \`${db.database}\`.\`${infoTable}\` WHERE facebookID=${facebookID}`;
+
+	let insertQuery = `INSERT INTO \`${db.database}\`.\`${infoTable}\` ` +
 		`(\`startupName\`, \`email\`, \`numPersons\`, \`phone\`, \`location\`, \`eventName\`, \`facebookID\`)` +
 		` VALUES (` +
-			/*db.escape('') + "," +*/
-			db.escape(req.body.startupName) +  "," +
-			db.escape(req.body.email) +  "," +
-			db.escape(req.body.numPersons) +  "," +
-			db.escape(req.body.contactNo) +  "," +
-			db.escape(req.body.location) +  "," +
-			db.escape(req.body.eventName) +  "," +
-			db.escape(req.body.facebookID) +  ");";
+			startupName +  "," +
+			email +  "," +
+			numPersons +  "," +
+			contactNo +  "," +
+			location +  "," +
+			eventName +  "," +
+			facebookID +  ");";
 
-			db.query(insertQuery)
-			.then((res : any) => {
-				return res.insertId
+			let updateQuery =
+			`UPDATE \`registrations\`.\`upstart\` ` + 
+			`SET \`startupName\`=${startupName}, ` + 
+			`   \`email\`=${email}, ` + 
+			`   \`numPersons\`=${numPersons}, ` +
+			`   \`phone\`=${contactNo}, ` +
+			`   \`location\`=${location},` +
+			`   \`eventName\`=${eventName},` +
+			`   \`facebookID\`=${facebookID} WHERE \`facebookID\`=${facebookID};`;
+			
+			console.log(checkQuery);
+			db.query(checkQuery)
+			.then((res: any) => {
+				console.log(res);
+				return Array.from(res).length === 0
 			})
-			.then(id => {
-				let mappingQuery = `INSERT INTO \`${db.database}\`.\`${mappingTable}\` ` +
-					`(\`id\`, \`PersonName\`) VALUES `;
-				for(let i = 0; i < Persons.length; i++){
-					mappingQuery += `(` + db.escape(id) +  "," + db.escape(Persons[i].name) + `)`;
-					if(i != Persons.length - 1)
-						mappingQuery += ',';
+			.then((e: boolean) => {
+				if (e === true)
+					return db.query(insertQuery);
+				else
+					return db.query(updateQuery);
+			})
+			.then((result: any) => {
+				if(result.affectedRows !== 1)
+					throw new Error(infoTable + ' had more than two entries with same facebookID');
+				else {
+					// New User's fbID has been added, now added the Persons too!
+					let mappingQuery = `INSERT INTO \`${db.database}\`.\`${mappingTable}\` ` +
+						`(\`facebookID\`, \`PersonName\`) VALUES `;
+					for(let i = 0; i < Persons.length; i++){
+						mappingQuery += `(` + facebookID +  "," + db.escape(Persons[i].name) + `)`;
+						if(i != Persons.length - 1)
+							mappingQuery += ',';
+					}
+					return db.query(mappingQuery)
+						.then(res => res)
+						.catch(err => {
+							console.log(err);
+							res.status(500);
+							res.end(JSON.stringify("false"));
+						});
 				}
-
-				return db.query(mappingQuery)
-					.then(res => res)
-					.catch(err => {
-						console.log(err);
-						res.status(500);
-						res.end(JSON.stringify("false"));
-					});
 			})
 			.then((result : any) => {
 				if(result.affectedRows == Persons.length)
@@ -125,14 +163,14 @@ app.post('/api/register', (req : express.Request, res : express.Response) => {
 				console.log(err);
 				res.status(500);
 				res.end(JSON.stringify("false"));
-			});
-})
-app.get('/', (req, res)=> {
-	const query = 'select * from registrations.upstart';
-	db.query(query).then((e : any) => {
-		console.log(Array.from(e).length);
-	});
-})
+			})
+});
+/*app.get('/', (req, res)=> {
+ *  const query = 'select * from registrations.upstart';
+ *  db.query(query).then((e : any) => {
+ *    console.log(Array.from(e).length);
+ *  });
+ *})*/
 app.post('/api/postLink', (req : express.Request, res : express.Response) => {
 	console.log(req.body);
 	assert.ok(req.body.facebookID);
@@ -147,7 +185,7 @@ app.post('/api/postLink', (req : express.Request, res : express.Response) => {
 	const linksTable = 'links';
 
 	// MySQL Queries
-	let checkQuery = `SELECT * FROM ${linksTable} WHERE` + facebookID + ';';
+	let checkQuery = `SELECT * FROM ${linksTable} WHERE facebookID=` + facebookID + ';';
 	let updateQuery = `UPDATE ${linksTable} SET \`link\`=` + 
 		link + ` WHERE \`facebookID\`=${facebookID};`; 
 	let insertQuery	= `INSERT INTO ${linksTable} (\`facebookID\`, \`link\`) VALUES` + '(' +
@@ -155,7 +193,10 @@ app.post('/api/postLink', (req : express.Request, res : express.Response) => {
 		link + ');';
 
 	db.query(checkQuery)
-		.then((res: any) => Array.from(res).length === 0)
+		.then((res: any) => {
+			console.log(res);
+			return Array.from(res).length === 0
+		})
 		.then((e: boolean) => {
 			if (e === true)
 				return db.query(insertQuery);
