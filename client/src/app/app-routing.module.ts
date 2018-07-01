@@ -6,7 +6,9 @@ import { HomeComponent } from './components/home/home.component';
 import { FbpostsComponent } from './components/fbposts/fbposts.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { OnLoginComponent } from './components/on-login/on-login.component';
+import { GuideComponent } from './components/guide/guide.component';
 import { RegformComponent } from './components/regform/regform.component';
+import { LinkSubmissionComponent } from './components/link-submission/link-submission.component';
 const routes: Routes = [
 	{
 		path: 'login',
@@ -15,6 +17,10 @@ const routes: Routes = [
 	{
 		path: 'home',
 		component: HomeComponent
+	},
+	{
+		path : 'form',
+		component : RegformComponent
 	},
 	/*{
 	 *  path: 'fbposts',
@@ -29,8 +35,12 @@ const routes: Routes = [
 		component: OnLoginComponent
 	},
 	{
-		path: 'regform',
-		component: RegformComponent
+		path: 'linkSubmit',
+		component: LinkSubmissionComponent
+	},
+	{
+		path: 'guidelines',
+		component: GuideComponent
 	},
 	{
 		path: '**',

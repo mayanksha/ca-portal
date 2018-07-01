@@ -86,10 +86,12 @@ export class LoginService {
 			.catch(console.error.bind(console));
 	}
 
-	logout() {
-		this.fb.logout().then(() => {
-			console.log('Logged out!');
+	logout(): Promise<any> {
+		return this.fb.logout().then((res) => {
+			/*console.log(res);
+			 *console.log('Logged out!');*/
 			localStorage.clear();
+			Promise.resolve(true);
 		});
 	}
 }

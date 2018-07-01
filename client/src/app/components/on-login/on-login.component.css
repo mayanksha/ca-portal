@@ -7,7 +7,6 @@
   width: 100vw;
   padding: 10px;
 }
-
 .big-heading {
   font-weight: 500;
 }
@@ -76,4 +75,7 @@ span.buttonText {
 }
 .svg_facebook {
 	padding : 5px;
+}
+.minwidth {
+	minwidth : 40vw !important;
 }

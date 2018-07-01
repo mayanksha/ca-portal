@@ -11,3 +11,6 @@
   left: 0;
   right: 0;
 }
+.mat-icon {
+	transform: scale(1.3);
+}

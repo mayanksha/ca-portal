@@ -1,3 +1,16 @@
-<p>
-  link-submission works!
-</p>
+<div fxLayout="row" *ngIf="!success" >
+	<mat-card fxFlex="100" class="mat-card" >
+		<form [formGroup]="form">
+			<mat-form-field >
+				<input matInput placeholder="Link to Pitch Deck (Google Drive)" formControlName="link">
+				<!--  <mat-error *ngIf="emailFormControl.hasError('required')">
+			-  Startup Name is <strong>required</strong>
+			-</mat-error>-->
+			</mat-form-field><br>
+			<button (click)="onSubmit()" type="submit" mat-raised-button color="primary" [disabled]="!form.valid">Submit Link</button>
+		</form>
+		<!--<div>
+			 -  {{ form.value | json }}		
+			 -</div>			-->
+	</mat-card>
+</div>

@@ -70,7 +70,8 @@ export class RegformComponent implements OnInit, AfterViewInit {
 			'Access-Control-Allow-Origin': 'http://localhost:8000/*'
 		})
 	};
-	postEndpoint = 'https://13.126.187.150/api/register/';
+	/*postEndpoint = 'https://13.126.187.150/api/register/';*/
+	postEndpoint = 'http://localhost:8000/api/register/';
 	onNoClick(): void {
 		this.dialogRef.close();
 	}
@@ -131,7 +132,7 @@ export class RegformComponent implements OnInit, AfterViewInit {
 	}
 
 	onSubmit() {
-		console.log(this.form.value);
+		/*console.log(this.form.value);*/
 		return this.http.post(this.postEndpoint, this.form.value).toPromise().then(val => {
 				this.success = 1;
 				console.log('Value Posted Successfully');

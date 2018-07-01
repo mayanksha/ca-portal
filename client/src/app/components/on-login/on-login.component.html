@@ -3,10 +3,14 @@
 	<div class="big-heading mat-display-2">
 		What would you like to do?	
 	</div><br>
-	<a mat-raised-button (click)="openModal()" >
+	<a mat-raised-button (click)="openModal()" color="primary">
 		UpStart Registration Form	
 	</a>	
-	<a mat-raised-button (click)="openUploader()">
-		Upload .pdf/ .docx/ .ppt	
+	<a mat-raised-button (click)="openUploader()" class="minwidth" color="primary" >
+		Upload Link to Pitch Deck	
+	</a>	
+	<a mat-raised-button (click)="openGuide()" color="primary">
+		Guide Lines	
 	</a>	
 </div>
+<app-topbar></app-topbar>

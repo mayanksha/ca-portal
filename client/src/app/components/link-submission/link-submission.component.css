@@ -1,0 +1,9 @@
+.mat-form-field {
+	width : 100% !important;
+}
+input {
+	width : 1000px !important;
+	flex-basis: auto;
+	flex-grow: 1;
+
+}

@@ -1,9 +1,23 @@
+<!--<button mat-button [matMenuTriggerFor]="menu">Menu</button>
+   -<mat-menu #menu="matMenu">
+   -  <button mat-menu-item>Item 1</button>
+   -  <button mat-menu-item>Item 2</button>
+   -</mat-menu>
+   --->
 <mat-toolbar class="topbar" fxLayout="row">
-  <mat-icon>link</mat-icon>
-  <span fxFlexOffset="10px" fxFlex="0 0 80px">Campus Ambassador Portal</span>
-  <!-- <app-searchbar *ngIf="search" fxFlexOffset="20px" fxFlex="0 1 800px"></app-searchbar> -->
-  <span fxFlex></span>
-  <button fxFlexOffset="10px" mat-icon-button routerLink="/logout">
-    <mat-icon>exit_to_app</mat-icon>
-  </button>
+	<mat-icon>link</mat-icon>
+	<span fxFlexOffset="10px" fxFlex="0 0 80px">E-Cell Registrations Portal</span>
+	<!-- <app-searchbar *ngIf="search" fxFlexOffset="20px" fxFlex="0 1 800px"></app-searchbar> -->
+	<span fxFlex="83"></span>
+	<a *ngIf="!logOutPressed" (click)="logOut()" >
+		<button  mat-icon-button>
+			Logout &nbsp;
+			<mat-icon>exit_to_app</mat-icon>
+		</button>
+	</a>
+	<mat-progress-spinner [diameter]="40" *ngIf="logOutPressed"
+        color="primary"
+				mode="indeterminate"
+        value="50">
+    </mat-progress-spinner>
 </mat-toolbar>

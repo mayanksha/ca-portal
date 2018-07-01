@@ -8,7 +8,7 @@ import { ScriptService } from './services/script.service';
 })
 
 export class AppComponent {
-	title = 'app';
+	title = 'E-Summit 2018 Registration Portal';
 	constructor(
 		private script: ScriptService,
 	) {}

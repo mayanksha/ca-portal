@@ -19,6 +19,9 @@
 		],
 		"no-input-rename" : [
 			false
+		],
+		"member-ordering" : [
+			false
 		]
     }
 }

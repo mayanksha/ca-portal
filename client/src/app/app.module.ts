@@ -11,6 +11,7 @@ import {
 	MatAutocompleteModule,
 	MatInputModule,
 	MatGridListModule,
+	MatExpansionModule,
 	MatCardModule,
 	MatMenuModule,
 	MatSidenavModule,
@@ -38,6 +39,7 @@ import { RegformComponent } from './components/regform/regform.component';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { TicksComponent } from './components/ticks/ticks.component';
 import { LinkSubmissionComponent } from './components/link-submission/link-submission.component';
+import { GuideComponent } from './components/guide/guide.component';
 
 @NgModule({
 	declarations: [
@@ -52,6 +54,7 @@ import { LinkSubmissionComponent } from './components/link-submission/link-submi
 		RegformComponent,
 		TicksComponent,
 		LinkSubmissionComponent,
+		GuideComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -68,6 +71,7 @@ import { LinkSubmissionComponent } from './components/link-submission/link-submi
 		MatInputModule,
 		FormsModule,
 		MatGridListModule,
+		MatExpansionModule,
 		MatCardModule,
 		MatMenuModule,
 		MatSidenavModule,

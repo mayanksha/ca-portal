@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { RegformComponent } from '../regform/regform.component';
+import { LinkSubmissionComponent } from '../link-submission/link-submission.component';
+import { GuideComponent } from '../guide/guide.component';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { LoginService } from '../../services/login.service';
 import { FbDataService } from '../../services/fb-data.service';
@@ -10,10 +12,13 @@ import { FbDataService } from '../../services/fb-data.service';
 	styleUrls: ['./on-login.component.css']
 })
 export class OnLoginComponent implements OnInit {
-	/*heroForm = new FormGroup({
-	 *  name: new FormControl()
-	 *});*/
+	innerWidth: any;
 	userName: string;
+	dialogRef: MatDialogRef<RegformComponent | LinkSubmissionComponent | GuideComponent>;
+	@HostListener('window:resize', ['$event'])
+	onResize(event) {
+		this.innerWidth = (window.innerWidth);
+	}
 	constructor(public dialog: MatDialog,
 		private loginService: LoginService,
 		private router: Router,
@@ -38,14 +43,22 @@ export class OnLoginComponent implements OnInit {
 	ngOnInit() {
 	}
 	openModal(): void {
-		const dialogRef = this.dialog.open(RegformComponent, {
-		});
-
-		dialogRef.afterClosed().subscribe(result => {
+		this.dialogRef = this.dialog.open(RegformComponent, {});
+		this.dialogRef.afterClosed().subscribe(result => {
 			/*console.log('The dialog was closed');*/
 		});
 	}
 	openUploader() {
-		this.dataService.fetchProfileData().then(console.log).catch(console.error);
+		this.dialogRef = this.dialog.open(LinkSubmissionComponent, {});
+		this.dialogRef.afterClosed().subscribe(result => {
+			/*console.log('The dialog was closed');*/
+		});
+		// this.dataService.fetchProfileData().then(console.log).catch(console.error);
+	}
+	openGuide() {
+		this.dialogRef = this.dialog.open(GuideComponent, {});
+		this.dialogRef.afterClosed().subscribe(result => {
+			/*console.log('The dialog was closed');*/
+		});
 	}
 }

@@ -18,13 +18,16 @@ export class LoginComponent implements OnInit {
 		private loginService: LoginService,
 		private dataService: FbDataService
 	) {
-		/*particlesJS.load('particles-js', '../../assets/particlesjs-config.json', null);*/
+		particlesJS.load('particles-js', '../../assets/particlesjs-config.json', null);
 		this.facebookID = localStorage.getItem('facebookID');
 	}
+	// false : user not logged in,
+	// true : trying to log in
 	spinnerState = false;
 	facebookID: string;
 	mode = 'indeterminate';
 	login() {
+		this.spinnerState = true;
 		this.loginService.performLogin()
 			.then((res) => {
 				/*console.log(res.status);*/
@@ -38,10 +41,6 @@ export class LoginComponent implements OnInit {
 	getProfile = () => {
 		this.dataService.fetchProfileData()
 			.then();
-	}
-
-	logout() {
-		this.loginService.logout();
 	}
 
 	feedComponent () {
