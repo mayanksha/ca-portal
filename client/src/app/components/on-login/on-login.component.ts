@@ -43,20 +43,28 @@ export class OnLoginComponent implements OnInit {
 	ngOnInit() {
 	}
 	openModal(): void {
-		this.dialogRef = this.dialog.open(RegformComponent, {});
+		this.dialogRef = this.dialog.open(RegformComponent, {
+			height : '800px',
+			width : '600px'
+		});
 		this.dialogRef.afterClosed().subscribe(result => {
 			/*console.log('The dialog was closed');*/
 		});
 	}
 	openUploader() {
-		this.dialogRef = this.dialog.open(LinkSubmissionComponent, {});
+		this.dialogRef = this.dialog.open(LinkSubmissionComponent, {
+			width : '500px'
+		});
 		this.dialogRef.afterClosed().subscribe(result => {
 			/*console.log('The dialog was closed');*/
 		});
 		// this.dataService.fetchProfileData().then(console.log).catch(console.error);
 	}
 	openGuide() {
-		this.dialogRef = this.dialog.open(GuideComponent, {});
+		this.dialogRef = this.dialog.open(GuideComponent, {
+			height : '600px',
+			width : '600px'
+		});
 		this.dialogRef.afterClosed().subscribe(result => {
 			/*console.log('The dialog was closed');*/
 		});
