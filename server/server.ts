@@ -77,7 +77,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended : false }));
 
 app.use(cors());
-app.post('/api/register', (req : express.Request, res : express.Response) => {
+app.post('/register', (req : express.Request, res : express.Response) => {
 	assert.ok(req.body.startupName);
 	assert.ok(req.body.email);
 	assert.ok(req.body.numPersons);
@@ -120,12 +120,23 @@ app.post('/api/register', (req : express.Request, res : express.Response) => {
 			`   \`location\`=${location},` +
 			`   \`eventName\`=${eventName},` +
 			`   \`facebookID\`=${facebookID} WHERE \`facebookID\`=${facebookID};`;
-			
+
+			let mappingQuery = `INSERT INTO \`${db.database}\`.\`${mappingTable}\` ` +
+			`(\`facebookID\`, \`PersonName\`) VALUES `;
+			for(let i = 0; i < Persons.length; i++){
+				mappingQuery += `(` + facebookID +  "," + db.escape(Persons[i].name) + `)`;
+				if(i != Persons.length - 1)
+					mappingQuery += ',';
+			}
+			let insert = false;
+			let deleteQuery = `DELETE FROM ${mappingTable} WHERE \`facebookID\`=${facebookID}`;
 			console.log(checkQuery);
 			db.query(checkQuery)
 			.then((res: any) => {
 				console.log(res);
-				return Array.from(res).length === 0
+				if(Array.from(res).length === 0)
+					insert = true;
+				return insert; 
 			})
 			.then((e: boolean) => {
 				if (e === true)
@@ -137,25 +148,40 @@ app.post('/api/register', (req : express.Request, res : express.Response) => {
 				if(result.affectedRows !== 1)
 					throw new Error(infoTable + ' had more than two entries with same facebookID');
 				else {
-					// New User's fbID has been added, now added the Persons too!
-					let mappingQuery = `INSERT INTO \`${db.database}\`.\`${mappingTable}\` ` +
-						`(\`facebookID\`, \`PersonName\`) VALUES `;
-					for(let i = 0; i < Persons.length; i++){
-						mappingQuery += `(` + facebookID +  "," + db.escape(Persons[i].name) + `)`;
-						if(i != Persons.length - 1)
-							mappingQuery += ',';
+					// Case when persons are already mapped, so remove those by their facebookID
+
+					if(insert === false){
+						return db.query(deleteQuery)
+							.then(result => {
+								console.log(result);
+								return db.query(mappingQuery)
+									.then(res => res)
+									.catch(err => {
+										console.log(err);
+										res.status(500);
+										res.end(JSON.stringify("false"));
+									});
+							})
+							.catch(err => {
+								console.log(err);
+								res.status(500);
+								res.end(JSON.stringify("false"));
+							});
 					}
-					return db.query(mappingQuery)
-						.then(res => res)
-						.catch(err => {
-							console.log(err);
-							res.status(500);
-							res.end(JSON.stringify("false"));
-						});
+					else {
+						// New User's fbID has been added, now added the Persons too!
+						return db.query(mappingQuery)
+							.then(res => res)
+							.catch(err => {
+								console.log(err);
+								res.status(500);
+								res.end(JSON.stringify("false"));
+							});
+					}
 				}
 			})
 			.then((result : any) => {
-				if(result.affectedRows == Persons.length)
+				if(result.affectedRows === Persons.length)
 					res.status(200);
 				res.end(JSON.stringify(true));
 			})
@@ -171,7 +197,7 @@ app.post('/api/register', (req : express.Request, res : express.Response) => {
  *    console.log(Array.from(e).length);
  *  });
  *})*/
-app.post('/api/postLink', (req : express.Request, res : express.Response) => {
+app.post('/postLink', (req : express.Request, res : express.Response) => {
 	console.log(req.body);
 	assert.ok(req.body.facebookID);
 	assert.ok(req.body.link);

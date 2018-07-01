@@ -11,7 +11,7 @@ export class TicksComponent implements OnInit {
 	green = '../../../assets/green.png';
 	red = '../../../assets/red.png';
 	successString = 'Thanks for Registering with us!';
-	failureString = 'Oops! There was some error on our side. Please contact the webmasters of Ecell!';
+	failureString = `Oops! There was some error on our side. Try Logging Out and Logging Back in, and then re-submit the form. If it still fails, mail your issue at admin@ecelliitk.org and we'll get back to you!` ;
 	constructor(
 		public dialogRef: MatDialogRef<TicksComponent>,
 	) { }

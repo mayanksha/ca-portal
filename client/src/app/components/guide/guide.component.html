@@ -4,7 +4,7 @@
 			<mat-expansion-panel *ngFor="let pt of points; let i = index" [expanded]="step === i" (opened)="setStep(i)" hideToggle>
 				<mat-action-row>
 					<h2>{{pt.details}}</h2>
-					<button mat-button color="primary" (click)="nextStep()">Next</button>
+					<!--<button mat-button color="primary" (click)="nextStep()">Next</button>-->
 				</mat-action-row>
 				<mat-expansion-panel-header>
 					<mat-panel-title>
@@ -19,7 +19,7 @@
 			<mat-expansion-panel [expanded]="step === 3" (opened)="setStep(3)" hideToggle>
 				<mat-action-row>
 					<h2>The sample pitch deck and be found <a href="http://bit.do/UpstartPitchDeck">here.</a></h2>
-					<button mat-button color="primary" (click)="nextStep()">Next</button>
+					<!--<button mat-button color="primary" (click)="nextStep()">Next</button>-->
 				</mat-action-row>
 				<mat-expansion-panel-header>
 					<mat-panel-title>
@@ -35,7 +35,7 @@
 				<mat-action-row>
 					<h2>If you have any doubt regarding filling up the form, please message on the following : +91 831 982 9976.
 					</h2>
-					<button mat-button color="primary" (click)="nextStep()">Next</button>
+					<!--<button mat-button color="primary" (click)="nextStep()">Next</button>-->
 				</mat-action-row>
 				<mat-expansion-panel-header>
 					<mat-panel-title>
