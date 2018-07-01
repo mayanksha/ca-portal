@@ -10,14 +10,15 @@ export class LinkSubmissionComponent implements OnInit {
 	form: FormGroup;
 	facebookID: string;
 	success = 0;
-	/*postLinkEndpoint = 'https://13.126.187.150/api/postLink/';*/
-	postLinkEndpoint = 'http://localhost:8000/api/postLink/';
+	postLinkEndpoint = 'https://13.126.187.150/api/postLink/';
+	/*postLinkEndpoint = 'http://localhost:8000/api/postLink/';*/
 	constructor(private fb: FormBuilder,
 							private http: HttpClient
-	) {  }
+	) {
+		this.facebookID = localStorage.getItem('facebookID');
+	}
 
 	ngOnInit() {
-		this.facebookID = localStorage.getItem('facebookID');
 		this.form = this.fb.group({
 			'facebookID' : [this.facebookID],
 			'link' : ['',

@@ -46,11 +46,13 @@ export class RegformComponent implements OnInit, AfterViewInit {
 		private http: HttpClient,
 		private fb: FormBuilder
 	) {
+		this.facebookID = localStorage.getItem('facebookID');
 		this.matcher = new MyErrorStateMatcher();
 		for (let i = 1; i <= this.maxPersons; i++) {
 			this.PersonsArray.push({'id': i, 'name' : ''});
 		}
 	}
+	facebookID: string;
 	form: FormGroup;
 	maxPersons = 5;
 	PersonsArray: Persons[] = [];
@@ -62,7 +64,6 @@ export class RegformComponent implements OnInit, AfterViewInit {
 	]);
 	// 0 = showForm, 1 = Success, 2 = Failure
 	success = 0;
-	facebookID = localStorage.getItem('userID');
 
 	httpOptions = {
 		headers : new HttpHeaders({
@@ -70,8 +71,8 @@ export class RegformComponent implements OnInit, AfterViewInit {
 			'Access-Control-Allow-Origin': 'http://localhost:8000/*'
 		})
 	};
-	/*postEndpoint = 'https://13.126.187.150/api/register/';*/
-	postEndpoint = 'http://localhost:8000/api/register/';
+	postEndpoint = 'https://13.126.187.150/api/register/';
+	/*postEndpoint = 'http://localhost:8000/api/register/';*/
 	onNoClick(): void {
 		this.dialogRef.close();
 	}
