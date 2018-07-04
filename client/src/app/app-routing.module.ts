@@ -22,14 +22,14 @@ const routes: Routes = [
 		path : 'form',
 		component : RegformComponent
 	},
-	/*{
-	 *  path: 'fbposts',
-	 *  component: FbpostsComponent
-	 *},*/
-	/*{
-	 *  path: 'dashboard',
-	 *  component: DashboardComponent
-	 *},*/
+	{
+		path: 'fbposts',
+		component: FbpostsComponent
+	},
+	{
+		path: 'dashboard',
+		component: DashboardComponent
+	},
 	{
 		path: 'onFbLogin',
 		component: OnLoginComponent

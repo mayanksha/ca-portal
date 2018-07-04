@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FbFeedService } from '../../services/fb-feed.service';
 import { LoginService } from '../../services/login.service';
 
-var visited : boolean = false;
+let visited = false;
 @Component({
 	selector: 'app-fbposts',
 	templateUrl: './fbposts.component.html',
@@ -11,14 +11,14 @@ var visited : boolean = false;
 		FbFeedService
 	]
 })
-/*export class FbpostsComponent implements OnInit, AfterViewInit {*/
+
 export class FbpostsComponent implements OnInit, OnDestroy {
-	feedsReturned : Promise<any>;
-	posts : any;	
+	feedsReturned: Promise<any>;
+	posts: any;
 	constructor(
-		private feedService : FbFeedService,
-		private loginService : LoginService
-	) { 
+		private feedService: FbFeedService,
+		private loginService: LoginService
+	) {
 		this.feedsReturned = this.getAllFeeds();
 	}
 	ngOnInit() {
@@ -29,18 +29,18 @@ export class FbpostsComponent implements OnInit, OnDestroy {
 				console.log(visited);
 				setTimeout(() => {
 					(window as any).FB.XFBML.parse();
-				}, 0)
-			})
+				}, 0);
+			});
 	}
-	ngOnDestroy(){
+	ngOnDestroy() {
 		visited = true;
 	}
-	timeDiffCalc = (a, b) : number => {
-		let diff = b - a;
-		let mins = (b - a)/1000/60;
+	timeDiffCalc = (a, b): number => {
+		const diff = b - a;
+		const mins = (b - a) / 1000 / 60;
 		return mins;
 	}
-	getAllFeeds =  () : Promise<any> => {
+	getAllFeeds =  (): Promise<any> => {
 		return this.feedService.getAllPosts()
 			.then((res) => {
 				this.posts = res;

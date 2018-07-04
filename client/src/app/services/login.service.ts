@@ -21,7 +21,7 @@ export class LoginService {
 	};
 	constructor(private script: ScriptService, private fb: FacebookService) {
 		const params: InitParams = {
-			appId: '410511536103168',
+			appId: '457343458032910',
 			version: 'v3.0',
 			xfbml: true,
 			cookie: true
