@@ -1,3 +1,20 @@
 .white-bg{
 	background-color: #fff;
 }
+
+.full-content {
+	position: absolute;
+	width: 50%;
+	top: 64px;
+	left: 10px;
+	right: 10px;
+	min-width: 600px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.fb-img {
+	width: 100%;
+	max-height: 600px;
+	margin: auto;
+}

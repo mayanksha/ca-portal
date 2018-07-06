@@ -3,6 +3,8 @@ import { FbFeedService } from '../../services/fb-feed.service';
 import { LoginService } from '../../services/login.service';
 
 let visited = false;
+declare var particlesJS: any;
+
 @Component({
 	selector: 'app-fbposts',
 	templateUrl: './fbposts.component.html',
@@ -20,6 +22,11 @@ export class FbpostsComponent implements OnInit, OnDestroy {
 		private loginService: LoginService
 	) {
 		this.feedsReturned = this.getAllFeeds();
+		particlesJS.load(
+			'particles-js',
+			'../../assets/particlesjs-config.json',
+			null
+		);
 	}
 	ngOnInit() {
 		Promise.all([this.feedsReturned, this.loginService.loadPromise])
