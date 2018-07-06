@@ -15,33 +15,33 @@ const routes: Routes = [
 		component: LoginComponent
 	},
 	{
-		path: 'home',
+		path: 'tasks',
 		component: HomeComponent
 	},
-	{
-		path : 'form',
-		component : RegformComponent
-	},
+	// {
+	// 	path : 'form',
+	// 	component : RegformComponent
+	// },
 	{
 		path: 'fbposts',
 		component: FbpostsComponent
 	},
-	{
-		path: 'dashboard',
-		component: DashboardComponent
-	},
-	{
-		path: 'onFbLogin',
-		component: OnLoginComponent
-	},
-	{
-		path: 'linkSubmit',
-		component: LinkSubmissionComponent
-	},
-	{
-		path: 'guidelines',
-		component: GuideComponent
-	},
+	// {
+	// 	path: 'dashboard',
+	// 	component: DashboardComponent
+	// },
+	// {
+	// 	path: 'onFbLogin',
+	// 	component: OnLoginComponent
+	// },
+	// {
+	// 	path: 'linkSubmit',
+	// 	component: LinkSubmissionComponent
+	// },
+	// {
+	// 	path: 'guidelines',
+	// 	component: GuideComponent
+	// },
 	{
 		path: '**',
 		redirectTo: '/login',

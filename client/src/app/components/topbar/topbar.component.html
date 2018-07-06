@@ -6,17 +6,17 @@
    -->
 <mat-toolbar class="topbar" fxLayout="row">
 	<mat-icon>link</mat-icon>
-	<span fxFlexOffset="10px" fxFlex="0 0 80px">E-Cell Registrations Portal</span>
+	<span fxFlexOffset="10px" fxFlex="0 0 80px">E-Cell Campus Ambassadors Portal</span>
 	<span fxFlex></span>
 	<div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
-		<a mat-raised-button [routerLink]="['']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-			Home
+		<a mat-raised-button [routerLink]="['/fbposts']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+			FB Posts
+		</a>
+		<a mat-raised-button [routerLink]="['/tasks']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+			Tasks
 		</a>
 		<a mat-raised-button [routerLink]="['/leaderboard']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
 			Leaderboard
-		</a>
-		<a mat-raised-button [routerLink]="['/info']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-			Info
 		</a>
 		<a mat-raised-button [routerLink]="['/contacts']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
 			Contacts

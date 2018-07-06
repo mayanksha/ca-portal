@@ -11,8 +11,23 @@
 .tasks {
   padding: 12px 0;
   overflow-y: auto;
+  margin: auto;
 }
 
 .task {
   background: white;
+}
+
+.task-card {
+  padding: 16px;
+  width: 100%;
+}
+
+.task-title {
+  color: #8a2be2; 
+}
+
+.task-content {
+  text-align: left;
+  font-size: 1em;
 }
