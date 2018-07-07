@@ -9,16 +9,19 @@
 	<span fxFlexOffset="10px" fxFlex="0 0 80px">E-Cell Campus Ambassadors Portal</span>
 	<span fxFlex></span>
 	<div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
-		<a mat-raised-button [routerLink]="['/fbposts']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+		<a mat-raised-button color="primary" [routerLink]="['/fbposts']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
 			FB Posts
 		</a>
-		<a mat-raised-button [routerLink]="['/tasks']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+		<a mat-raised-button color="primary" [routerLink]="['/tasks']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" matBadge="3" matBadgeColor="accent">
 			Tasks
 		</a>
-		<a mat-raised-button [routerLink]="['/leaderboard']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+		<a mat-raised-button color="primary" [routerLink]="['/leaderboard']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
 			Leaderboard
 		</a>
-		<a mat-raised-button [routerLink]="['/contacts']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+		<a mat-raised-button color="primary" [routerLink]="['/guidelines']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+			Guidelines	
+		</a>
+		<a mat-raised-button color="primary" [routerLink]="['/contacts']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
 			Contacts
 		</a>
 	</div>

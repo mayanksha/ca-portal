@@ -2,13 +2,24 @@
   <app-topbar></app-topbar>
   <div class="container">
     <div class="tasks" fxFlex="0 1 600px" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="12px">
-      <mat-card *ngFor="let task of [0,1,2]" class="task-card" fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="5px">
-        <span class="mat-title task-title">Task Title</span>
+      <mat-card *ngFor="let task of [0,1,2]; let i = index" class="task-card" fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="5px">
+
+				<mat-card-header>
+					<!--<mat-card-title class="mat-title task-title">Task Title</mat-card-title>-->
+					<span class="mat-title task-title">Tasks Title</span>
+				</mat-card-header>
         <div class="task-content">Sample task Sample task Sample task Sample task Sample task Sample task Sample task Sample task Sample task Sample task 
           Sample task Sample task Sample task Sample task Sample task Sample task Sample task Sample task Sample task Sample task 
           Sample task Sample task Sample task Sample task Sample task Sample task Sample task Sample task Sample task 
         </div>
-        <!-- <app-link-submission></app-link-submission> -->
+				<hr style="width: 90%; margin-bottom:15px">
+					<form width="100%" >
+						<mat-form-field class="form-width">
+							<input matInput placeholder="Submit Link/Proof to task completion">
+							<mat-icon matSuffix>mode_edit</mat-icon>
+						</mat-form-field>&nbsp; &nbsp;
+						<button mat-raised-button color="accent">Submit</button>
+					</form>
       </mat-card>      
     </div>
   </div>

@@ -29,15 +29,15 @@ export class FbpostsComponent implements OnInit, OnDestroy {
 		);
 	}
 	ngOnInit() {
-		Promise.all([this.feedsReturned, this.loginService.loadPromise])
-			.then((a) => {
-				/*let render = document.getElementsByTagName('fb-post')[0].parentNode;
-				 *console.log(render);*/
-				console.log(visited);
-				setTimeout(() => {
-					(window as any).FB.XFBML.parse();
-				}, 0);
-			});
+		/*Promise.all([this.feedsReturned, this.loginService.loadPromise])
+		 *  .then((a) => {
+		 *    let render = document.getElementsByTagName('fb-post')[0].parentNode;
+		 *    console.log(render);
+		 *    console.log(visited);
+		 *    setTimeout(() => {
+		 *      (window as any).FB.XFBML.parse();
+		 *    }, 0);
+		 *  });*/
 	}
 	ngOnDestroy() {
 		visited = true;
@@ -56,5 +56,12 @@ export class FbpostsComponent implements OnInit, OnDestroy {
 			})
 			.catch(console.error);
 		// null if No posts present
+	}
+	openPopup(permalink_url) {
+		/*tslint:disable*/
+		const link =  `https://www.facebook.com/dialog/share?app_id=457343458032910&display=popup&href=${permalink_url}&redirect_uri=https://localhost:4200/fbposts`;
+		/*tslint:enable*/
+
+		(window).open(link, 'Share Facebook Post', 'width=626,height=500');
 	}
 }
