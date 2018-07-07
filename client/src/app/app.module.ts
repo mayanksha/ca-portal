@@ -19,7 +19,8 @@ import {
 	MatRadioModule,
 	MatDialogModule,
 	MatProgressSpinnerModule,
-	MatBadgeModule
+	MatBadgeModule,
+	MatCheckboxModule
 } from '@angular/material';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -80,7 +81,8 @@ import { GuideComponent } from './components/guide/guide.component';
 		MatRadioModule,
 		MatDialogModule,
 		MatProgressSpinnerModule,
-		MatBadgeModule
+		MatBadgeModule,
+		MatCheckboxModule
 	],
 	providers: [
 		LoginService,
