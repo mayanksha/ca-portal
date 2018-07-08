@@ -6,14 +6,22 @@ import process = require('process');
 import crypto = require('crypto');
 import session = require('express-session');
 import cors = require('cors');
-
 import assert = require('assert');
-//Interfaces
+import fs = require('fs');
+
+// Interfaces
 import { dbConfig } from './interfaces/dbConfig';
 import { Startup, Persons } from './interfaces/startup';
-//Config
+import { Database } from './config/database';
+
+// Config
 import { logger } from './config/logger';
 import { localConfig as Config } from './config/local_config';
+
+import https = require('https');
+const privkey  = fs.readFileSync('/home/msharma/git/intern/server/encryption/localhost.key', 'utf-8');
+const cert  = fs.readFileSync('/home/msharma/git/intern/server/encryption/localhost.crt', 'utf-8');
+const credentials = {key : privkey, cert: cert};
 
 function diff_time(a : Date, b : Date) : string {
 	let t1 = a.getTime();
@@ -31,52 +39,100 @@ function handleError(error) {
 		console.error(error);
 	}
 }
-function enclose(val : any) {
-	return `'` + val.toString() + `'`;
-}
-class Database {
-	private connection : mysql.Connection;
-	constructor(config : dbConfig, public database : string){
-		config.database = database;
-		this.connection  = mysql.createConnection(config);
-		this.connection.connect(err => {
-			if(err)
-				throw new Error(JSON.stringify({ "SQL service isn't running. Error : \n" : err }));
-		})
-	}
-	//Handle the Errors properly below
-	query(sql : string, args? : any){
-		return new Promise((resolve, reject) => {
-			this.connection.query(sql, args, (err, rows : any) => {
-				if (err) 
-					return reject(err);
-				resolve(rows);
-			})
-		})		
-	}
-	closeConnection(){
-		return new Promise((resolve, reject) => {
-			this.connection.end( err => {
-				if (err) 
-					return reject(err);
-				resolve();
-			} )
-		})
-	}
-	escape(val: string){
-		return this.connection.escape(val);
-	}
-}
 /*.catch( err => throw err);*/
 
-var db = new Database(Config, 'registrations');
+var db = Database.getInstance();
 var app : express.Application = express();
-app.use(httpLogger('dev'));
+const corsOptions = {
+	origin: 'https://ecelliitk.org',
+	optionsSuccessStatus: 200
+}
+/*const corsOptions = {
+ *  origin: 'https://localhost:4200',
+ *  optionsSuccessStatus: 200
+ *}*/
+app.use(httpLogger('combined'));
 app.use(session({ secret : Config.sessionSecret }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended : false }));
 
-app.use(cors());
+app.use(cors(corsOptions));
+
+app.get('/task_count', (req : express.Request, res : express.Response, next) => {
+	const query = `SELECT COUNT(*) FROM registrations.tasks`;
+	db.query(query)
+		.then((rows: any) => {
+			const count = (rows[0]['COUNT(*)']);
+			res.status(200);
+			res.header('Content-Type', 'application/json');
+			res.send({count: count});
+			res.end();
+		})
+		.catch(err => {
+			console.log(err);
+			next(err);
+		});
+})
+app.get('/tasks', (req : express.Request, res : express.Response, next) => {
+	const query = `SELECT * FROM registrations.tasks`;
+	db.query(query)
+		.then((rows: any) => {
+			res.status(200);
+			res.header('Content-Type', 'application/json');
+			res.send(Array.from(JSON.parse(JSON.stringify(rows))));
+			res.end();
+		})
+		.catch(err => {
+			console.log(err);
+			next(err);
+		});
+})
+app.post('/tasks', (req : express.Request, res : express.Response, next) => {
+	assert.ok(req.body.facebookID);
+	assert.ok(req.body.taskID);
+	assert.ok(req.body.link);
+
+	const facebookID = db.escape(req.body.facebookID);
+	const taskID = db.escape(req.body.taskID);
+	const link = db.escape(req.body.link);
+
+	const findQuery = `SELECT * FROM registrations.task_completions 
+	 WHERE facebookID=${facebookID} AND taskID=${taskID}`;
+
+	const insertQuery = `INSERT INTO \`registrations\`.\`task_completions\` (\`facebookID\`, \`taskID\`, \`link\`)
+	VALUES (${facebookID}, ${taskID}, ${link})`;
+
+	const updateQuery = `UPDATE \`registrations\`.\`task_completions\` 
+	 SET \`link\`=${link} WHERE facebookID=${facebookID} AND taskID=${taskID}`;
+
+	db.query(findQuery)
+		.then((rows: any): boolean => {
+			if (Array.from(rows).length === 0)
+				return true;	
+			else return false;
+		})
+		.then((bool: boolean) => {
+			if (bool)
+				return db.query(insertQuery)
+					.then((rows) => rows)
+					.catch((err) => Promise.reject(err))
+			else {
+				return db.query(updateQuery)
+					.then((rows) => rows)
+					.catch((err) => Promise.reject(err))
+			}
+		})
+		.then((rows: any) => {
+			console.log(rows);
+			res.status(200);
+			res.send(rows);
+			res.end()
+		})
+		.catch(err => {
+			console.error(err);
+			next(err);
+		})
+})
 app.post('/register', (req : express.Request, res : express.Response) => {
 	assert.ok(req.body.startupName);
 	assert.ok(req.body.email);
@@ -98,9 +154,9 @@ app.post('/register', (req : express.Request, res : express.Response) => {
 	const mappingTable = 'id_person_mapping';
 	const Persons : Persons[] = req.body.allPersons;
 
-	let checkQuery = `SELECT * FROM \`${db.database}\`.\`${infoTable}\` WHERE facebookID=${facebookID}`;
+	let checkQuery = `SELECT * FROM \`${Config.database}\`.\`${infoTable}\` WHERE facebookID=${facebookID}`;
 
-	let insertQuery = `INSERT INTO \`${db.database}\`.\`${infoTable}\` ` +
+	let insertQuery = `INSERT INTO \`${Config.database}\`.\`${infoTable}\` ` +
 		`(\`startupName\`, \`email\`, \`numPersons\`, \`phone\`, \`location\`, \`eventName\`, \`facebookID\`)` +
 		` VALUES (` +
 			startupName +  "," +
@@ -121,7 +177,7 @@ app.post('/register', (req : express.Request, res : express.Response) => {
 			`   \`eventName\`=${eventName},` +
 			`   \`facebookID\`=${facebookID} WHERE \`facebookID\`=${facebookID};`;
 
-			let mappingQuery = `INSERT INTO \`${db.database}\`.\`${mappingTable}\` ` +
+			let mappingQuery = `INSERT INTO \`${Config.database}\`.\`${mappingTable}\` ` +
 			`(\`facebookID\`, \`PersonName\`) VALUES `;
 			for(let i = 0; i < Persons.length; i++){
 				mappingQuery += `(` + facebookID +  "," + db.escape(Persons[i].name) + `)`;
@@ -191,12 +247,9 @@ app.post('/register', (req : express.Request, res : express.Response) => {
 				res.end(JSON.stringify("false"));
 			})
 });
-/*app.get('/', (req, res)=> {
- *  const query = 'select * from registrations.upstart';
- *  db.query(query).then((e : any) => {
- *    console.log(Array.from(e).length);
- *  });
- *})*/
+app.get('/', (req, res)=> {
+	res.end("HI!");
+})
 app.post('/postLink', (req : express.Request, res : express.Response) => {
 	console.log(req.body);
 	assert.ok(req.body.facebookID);
@@ -263,10 +316,11 @@ app.use('/*', (err, req, res, next) => {
 
 		// Internal Server Error 
 		res.status(500);
-		res.end();
+		res.end('500 - INTERNAL SERVER ERROR!');
 	}
-})
+});
+/*const server = https.createServer(credentials, app);*/
 app.listen(8000, (err : express.ErrorRequestHandler) => {
 	if(err) throw err;
-	else console.log("server listending on 8000");
+	else console.log("Server Listening on Port 8000");
 })

@@ -8,7 +8,7 @@ export interface Startup {
 	eventName: string;
 }
 export interface Persons {
-	id: number;
+	id?: number;
 	name: string;
 	gender?: string;
 }
