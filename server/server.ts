@@ -18,11 +18,6 @@ import { Database } from './config/database';
 import { logger } from './config/logger';
 import { localConfig as Config } from './config/local_config';
 
-import https = require('https');
-const privkey  = fs.readFileSync('/home/msharma/git/intern/server/encryption/localhost.key', 'utf-8');
-const cert  = fs.readFileSync('/home/msharma/git/intern/server/encryption/localhost.crt', 'utf-8');
-const credentials = {key : privkey, cert: cert};
-
 function diff_time(a : Date, b : Date) : string {
 	let t1 = a.getTime();
 	let t2 = b.getTime();
@@ -44,7 +39,7 @@ function handleError(error) {
 var db = Database.getInstance();
 var app : express.Application = express();
 const corsOptions = {
-	origin: 'https://ecelliitk.org',
+	origin: ['https://ecelliitk.org', 'https://ecelliitk.org'],
 	optionsSuccessStatus: 200
 }
 /*const corsOptions = {

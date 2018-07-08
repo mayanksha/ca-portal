@@ -12,7 +12,7 @@
 		<a mat-raised-button color="primary" [routerLink]="['/fbposts']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
 			FB Posts
 		</a>
-		<a mat-raised-button color="primary" [routerLink]="['/tasks']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" matBadge="3" matBadgeColor="accent">
+		<a mat-raised-button color="primary" [routerLink]="['/tasks']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" [matBadge]="taskCount" matBadgeColor="accent">
 			Tasks
 		</a>
 		<a mat-raised-button color="primary" [routerLink]="['/leaderboard']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
