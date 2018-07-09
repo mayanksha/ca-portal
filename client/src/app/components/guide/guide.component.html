@@ -1,52 +1,87 @@
-<div fxLayout="row">
-	<mat-card fxFlex="100" >
-		<mat-accordion class="example-headers-align">
-			<mat-expansion-panel *ngFor="let pt of points; let i = index" [expanded]="step === i" (opened)="setStep(i)" hideToggle>
-				<mat-action-row>
-					<h2>{{pt.details}}</h2>
-					<!--<button mat-button color="primary" (click)="nextStep()">Next</button>-->
-				</mat-action-row>
-				<mat-expansion-panel-header>
-					<mat-panel-title>
-						<mat-icon>create</mat-icon>
-					</mat-panel-title>
-		<mat-panel-description>
-			{{pt.gist}}
-		</mat-panel-description>
-				</mat-expansion-panel-header>
+<app-topbar></app-topbar>
 
-			</mat-expansion-panel>
-			<mat-expansion-panel [expanded]="step === 3" (opened)="setStep(3)" hideToggle>
-				<mat-action-row>
-					<h2>The sample pitch deck and be found <a href="http://bit.do/UpstartPitchDeck">here.</a></h2>
-					<!--<button mat-button color="primary" (click)="nextStep()">Next</button>-->
-				</mat-action-row>
-				<mat-expansion-panel-header>
-					<mat-panel-title>
-						<mat-icon>create</mat-icon>
-					</mat-panel-title>
-		<mat-panel-description>
-			Sample Pitch Deck
-		</mat-panel-description>
-				</mat-expansion-panel-header>
-
-			</mat-expansion-panel>
-			<mat-expansion-panel [expanded]="step === 4" (opened)="setStep(4)" hideToggle>
-				<mat-action-row>
-					<h2>If you have any doubt regarding filling up the form, please message on the following : +91 831 982 9976.
-					</h2>
-					<!--<button mat-button color="primary" (click)="nextStep()">Next</button>-->
-				</mat-action-row>
-				<mat-expansion-panel-header>
-					<mat-panel-title>
-						<mat-icon>create</mat-icon>
-					</mat-panel-title>
-		<mat-panel-description>
-Need More Help, Contact Us!
-		</mat-panel-description>
-				</mat-expansion-panel-header>
-
-			</mat-expansion-panel>
-		</mat-accordion>
+<div fxLayout="column" fxLayoutAlign="center center" fxLayoutWrap class="full-content">
+	<div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px" class="content-box">
+	<mat-card fxFlex="50">
+		<div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px">
+			<mat-icon class="icon">playlist_add_check</mat-icon>
+			<h2>Guidelines for using this Portal</h2>
+		</div>
+		<hr style="width: 100%;" style="">
+		<!--<div fxLayout="row" fxLayoutGap="15px" fxLayoutAlign="center center">
+			 -  <a mat-raised-button color="primary" target="_blank" (click)="openPopup(post.permalink_url)" >Share</a>
+			 -  <a mat-raised-button color="primary" target="_blank" [href]="post.permalink_url" rel="noopener">View</a>
+			 -</div>-->
+		 <div>
+			 <p>
+This portal will be the medium for communication between E-Cell IIT Kanpur and the Campus Ambassadors. We will be putting up the tasks for you here on a regular basis so keep yourself updated with the activities on this portal.
+<br><br>
+Your performance will be tracked and evaluated on this portal. Keep giving your best in the tasks and earn as many points as possible. The leaderboard will show the top performing CAs who’d be entitled to rewards, prizes and internship opportunities.
+<br><br>
+The FB Posts tab shows the latest posts by the Facebook page of E-Cell IIT Kanpur (<a href="https://facebook.com/ecelliitk">Facebook Page</a>). 
+This will keep you updated with the activities of E-Cell IITK. Do share our posts!
+<br><br>
+			 </p> 
+		 </div>
 	</mat-card>
+	</div>
 </div>
+<div class="container loading" *ngIf="!posts" fxLayoutAlign="center center">
+	<h2> Loading... </h2>
+</div>
+
+
+
+
+<!--<div fxLayout="row">
+	 -  <mat-card fxFlex="100" >
+	 -    <mat-accordion class="example-headers-align">
+	 -      <mat-expansion-panel *ngFor="let pt of points; let i = index" [expanded]="step === i" (opened)="setStep(i)" hideToggle>
+	 -        <mat-action-row>
+	 -          <h2>{{pt.details}}</h2>
+	 -          [><button mat-button color="primary" (click)="nextStep()">Next</button><]
+	 -        </mat-action-row>
+	 -        <mat-expansion-panel-header>
+	 -          <mat-panel-title>
+	 -            <mat-icon>create</mat-icon>
+	 -          </mat-panel-title>
+	 -    <mat-panel-description>
+	 -      {{pt.gist}}
+	 -    </mat-panel-description>
+	 -        </mat-expansion-panel-header>
+   -
+	 -      </mat-expansion-panel>
+	 -      <mat-expansion-panel [expanded]="step === 3" (opened)="setStep(3)" hideToggle>
+	 -        <mat-action-row>
+	 -          <h2>The sample pitch deck and be found <a href="http://bit.do/UpstartPitchDeck">here.</a></h2>
+	 -          [><button mat-button color="primary" (click)="nextStep()">Next</button><]
+	 -        </mat-action-row>
+	 -        <mat-expansion-panel-header>
+	 -          <mat-panel-title>
+	 -            <mat-icon>create</mat-icon>
+	 -          </mat-panel-title>
+	 -    <mat-panel-description>
+	 -      Sample Pitch Deck
+	 -    </mat-panel-description>
+	 -        </mat-expansion-panel-header>
+   -
+	 -      </mat-expansion-panel>
+	 -      <mat-expansion-panel [expanded]="step === 4" (opened)="setStep(4)" hideToggle>
+	 -        <mat-action-row>
+	 -          <h2>If you have any doubt regarding filling up the form, please message on the following : +91 831 982 9976.
+	 -          </h2>
+	 -          [><button mat-button color="primary" (click)="nextStep()">Next</button><]
+	 -        </mat-action-row>
+	 -        <mat-expansion-panel-header>
+	 -          <mat-panel-title>
+	 -            <mat-icon>create</mat-icon>
+	 -          </mat-panel-title>
+	 -    <mat-panel-description>
+   -Need More Help, Contact Us!
+	 -    </mat-panel-description>
+	 -        </mat-expansion-panel-header>
+   -
+	 -      </mat-expansion-panel>
+	 -    </mat-accordion>
+	 -  </mat-card>
+   -</div>-->

@@ -18,6 +18,10 @@ import { Database } from './config/database';
 import { logger } from './config/logger';
 import { localConfig as Config } from './config/local_config';
 
+/*import https = require('https');
+ *var privkey = fs.readFileSync('/home/msharma/git/intern/server/encryption/localhost.key'); 
+ *var cert = fs.readFileSync('/home/msharma/git/intern/server/encryption/localhost.crt');
+ *const credentials: https.ServerOptions = {key : privkey, cert: cert};*/
 function diff_time(a : Date, b : Date) : string {
 	let t1 = a.getTime();
 	let t2 = b.getTime();
@@ -38,10 +42,10 @@ function handleError(error) {
 
 var db = Database.getInstance();
 var app : express.Application = express();
-const corsOptions = {
-	origin: ['https://ecelliitk.org', 'https://ecelliitk.org'],
-	optionsSuccessStatus: 200
-}
+/*const corsOptions = {
+ *  origin: ['https://ecelliitk.org', 'https://ecelliitk.org'],
+ *  optionsSuccessStatus: 200
+ *}*/
 /*const corsOptions = {
  *  origin: 'https://localhost:4200',
  *  optionsSuccessStatus: 200
@@ -51,9 +55,9 @@ app.use(session({ secret : Config.sessionSecret }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended : false }));
 
-app.use(cors(corsOptions));
+app.use(cors());
 
-app.get('/task_count', (req : express.Request, res : express.Response, next) => {
+app.get('/api/task_count', (req : express.Request, res : express.Response, next) => {
 	const query = `SELECT COUNT(*) FROM registrations.tasks`;
 	db.query(query)
 		.then((rows: any) => {
@@ -68,7 +72,7 @@ app.get('/task_count', (req : express.Request, res : express.Response, next) => 
 			next(err);
 		});
 })
-app.get('/tasks', (req : express.Request, res : express.Response, next) => {
+app.get('/api/tasks', (req : express.Request, res : express.Response, next) => {
 	const query = `SELECT * FROM registrations.tasks`;
 	db.query(query)
 		.then((rows: any) => {
@@ -82,7 +86,7 @@ app.get('/tasks', (req : express.Request, res : express.Response, next) => {
 			next(err);
 		});
 })
-app.post('/tasks', (req : express.Request, res : express.Response, next) => {
+app.post('/api/tasks', (req : express.Request, res : express.Response, next) => {
 	assert.ok(req.body.facebookID);
 	assert.ok(req.body.taskID);
 	assert.ok(req.body.link);
@@ -246,7 +250,7 @@ app.get('/', (req, res)=> {
 	res.end("HI!");
 })
 app.post('/postLink', (req : express.Request, res : express.Response) => {
-	console.log(req.body);
+	/*console.log(req.body);*/
 	assert.ok(req.body.facebookID);
 	assert.ok(req.body.link);
 
@@ -293,6 +297,13 @@ app.post('/postLink', (req : express.Request, res : express.Response) => {
 			}
 		});
 })
+
+/*app.post('/postLink', (req : express.Request, res : express.Response) => {
+ *  assert.ok(req.body.facebookID);
+ *  assert.ok(req.body.contact);
+ *  assert.ok(req.body.name);
+ *  assert.ok(req.body.message);
+ *})*/
 app.use('/*', (req : express.Request, res : express.Response) => {
 	res.status(404);
 	res.end('404 : Not found');
@@ -315,7 +326,7 @@ app.use('/*', (err, req, res, next) => {
 	}
 });
 /*const server = https.createServer(credentials, app);*/
-app.listen(8000, (err : express.ErrorRequestHandler) => {
+app.listen(9000, (err : express.ErrorRequestHandler) => {
 	if(err) throw err;
-	else console.log("Server Listening on Port 8000");
+	else console.log("Server Listening on Port 9000");
 })

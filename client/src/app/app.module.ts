@@ -42,6 +42,8 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { TicksComponent } from './components/ticks/ticks.component';
 import { LinkSubmissionComponent } from './components/link-submission/link-submission.component';
 import { GuideComponent } from './components/guide/guide.component';
+import { LeaderboardComponent } from './components/leaderboard/leaderboard.component';
+import { ContactComponent } from './components/contact/contact.component';
 
 @NgModule({
 	declarations: [
@@ -57,6 +59,8 @@ import { GuideComponent } from './components/guide/guide.component';
 		TicksComponent,
 		LinkSubmissionComponent,
 		GuideComponent,
+		LeaderboardComponent,
+		ContactComponent,
 	],
 	imports: [
 		BrowserModule,

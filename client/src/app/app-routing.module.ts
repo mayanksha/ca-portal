@@ -9,6 +9,8 @@ import { OnLoginComponent } from './components/on-login/on-login.component';
 import { GuideComponent } from './components/guide/guide.component';
 import { RegformComponent } from './components/regform/regform.component';
 import { LinkSubmissionComponent } from './components/link-submission/link-submission.component';
+import { LeaderboardComponent } from './components/leaderboard/leaderboard.component';
+import { ContactComponent } from './components/contact/contact.component';
 const routes: Routes = [
 	{
 		path: 'login',
@@ -26,10 +28,14 @@ const routes: Routes = [
 		path: 'fbposts',
 		component: FbpostsComponent
 	},
-	// {
-	// 	path: 'dashboard',
-	// 	component: DashboardComponent
-	// },
+	{
+		path: 'leaderboard',
+		component: LeaderboardComponent
+	},
+	{
+		path: 'contact',
+		component: ContactComponent
+	},
 	// {
 	// 	path: 'onFbLogin',
 	// 	component: OnLoginComponent
@@ -38,10 +44,10 @@ const routes: Routes = [
 	// 	path: 'linkSubmit',
 	// 	component: LinkSubmissionComponent
 	// },
-	// {
-	// 	path: 'guidelines',
-	// 	component: GuideComponent
-	// },
+	{
+		path: 'guide',
+		component: GuideComponent
+	},
 	{
 		path: '**',
 		redirectTo: '/login',
