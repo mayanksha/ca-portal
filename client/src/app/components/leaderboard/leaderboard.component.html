@@ -1,6 +1,6 @@
 <app-topbar></app-topbar>
 
-<div fxLayout="column" fxLayoutAlign="center center" fxLayoutWrap class="full-content">
+<div fxLayout="column" fxLayoutAlign="center center" fxFlex="0 1 800px" class="full-content">
 	<div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px" class="content-box">
 	<mat-card fxFlex="50">
 		<div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px">
@@ -22,10 +22,6 @@
 	</mat-card>
 	</div>
 </div>
-<div class="container loading" *ngIf="!posts" fxLayoutAlign="center center">
-	<h2> Loading... </h2>
-</div>
-
 
 <!-- <div class="bg" *ngIf="posts" fxLayout="column" fxLayoutGap="50px" fxLayoutAlign="center center">
 	<fb-post *ngFor="let post of posts; let i = index" [href]="post.permalink_url" fxFlex="50" fxFlexOffset="50px"></fb-post>
