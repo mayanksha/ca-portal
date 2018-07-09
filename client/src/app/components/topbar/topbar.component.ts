@@ -12,7 +12,7 @@ export class TopbarComponent implements OnInit {
 
 	search = true;
 	logOutPressed = false;
-	taskCount: number;
+	taskCount = 0;
 	constructor(
 		private router: Router,
 		private loginService: LoginService,
