@@ -1,33 +1,34 @@
 <app-topbar></app-topbar>
 
-<div fxLayout="column" fxLayoutAlign="center center" fxLayoutWrap class="full-content">
+<div fxLayout="column" fxLayoutAlign="center center" fxFlex="0 1 800px" class="full-content">
 	<div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px" class="content-box">
-	<mat-card fxFlex="50">
-		<div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px">
-			<mat-icon class="icon">playlist_add_check</mat-icon>
-			<h2>Guidelines for using this Portal</h2>
-		</div>
-		<hr style="width: 100%;" style="">
-		<!--<div fxLayout="row" fxLayoutGap="15px" fxLayoutAlign="center center">
+		<mat-card fxFlex="50">
+			<div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px">
+				<mat-icon class="icon">playlist_add_check</mat-icon>
+				<h2>Guidelines for using this Portal</h2>
+			</div>
+			<hr style="width: 100%;">
+			<!--<div fxLayout="row" fxLayoutGap="15px" fxLayoutAlign="center center">
 			 -  <a mat-raised-button color="primary" target="_blank" (click)="openPopup(post.permalink_url)" >Share</a>
 			 -  <a mat-raised-button color="primary" target="_blank" [href]="post.permalink_url" rel="noopener">View</a>
 			 -</div>-->
-		 <div>
-			 <p>
-This portal will be the medium for communication between E-Cell IIT Kanpur and the Campus Ambassadors. We will be putting up the tasks for you here on a regular basis so keep yourself updated with the activities on this portal.
-<br><br>
-Your performance will be tracked and evaluated on this portal. Keep giving your best in the tasks and earn as many points as possible. The leaderboard will show the top performing CAs who’d be entitled to rewards, prizes and internship opportunities.
-<br><br>
-The FB Posts tab shows the latest posts by the Facebook page of E-Cell IIT Kanpur (<a href="https://facebook.com/ecelliitk">Facebook Page</a>). 
-This will keep you updated with the activities of E-Cell IITK. Do share our posts!
-<br><br>
-			 </p> 
-		 </div>
-	</mat-card>
+			<div>
+				<p>
+					This portal will be the medium for communication between E-Cell IIT Kanpur and the Campus Ambassadors. We will be putting
+					up the tasks for you here on a regular basis so keep yourself updated with the activities on this portal.
+					<br>
+					<br> Your performance will be tracked and evaluated on this portal. Keep giving your best in the tasks and earn as many
+					points as possible. The leaderboard will show the top performing CAs who’d be entitled to rewards, prizes and internship
+					opportunities.
+					<br>
+					<br> The FB Posts tab shows the latest posts by the Facebook page of E-Cell IIT Kanpur (
+					<a href="https://facebook.com/ecelliitk">Facebook Page</a>). This will keep you updated with the activities of E-Cell IITK. Do share our posts!
+					<br>
+					<br>
+				</p>
+			</div>
+		</mat-card>
 	</div>
-</div>
-<div class="container loading" *ngIf="!posts" fxLayoutAlign="center center">
-	<h2> Loading... </h2>
 </div>
 
 
