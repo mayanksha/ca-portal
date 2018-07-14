@@ -59,7 +59,7 @@ export class FbpostsComponent implements OnInit, OnDestroy {
 	}
 	openPopup(permalink_url) {
 		/*tslint:disable*/
-		const link =  `https://www.facebook.com/dialog/share?app_id=457343458032910&display=popup&href=${permalink_url}&redirect_uri=https://localhost:4200/fbposts`;
+		const link =  `https://www.facebook.com/dialog/share?app_id=457343458032910&display=popup&href=${permalink_url}`;
 		/*tslint:enable*/
 
 		(window).open(link, 'Share Facebook Post', 'width=626,height=500');

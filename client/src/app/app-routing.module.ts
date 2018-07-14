@@ -11,6 +11,7 @@ import { RegformComponent } from './components/regform/regform.component';
 import { LinkSubmissionComponent } from './components/link-submission/link-submission.component';
 import { LeaderboardComponent } from './components/leaderboard/leaderboard.component';
 import { ContactComponent } from './components/contact/contact.component';
+import { ThanksComponent } from './components/thanks/thanks.component';
 const routes: Routes = [
 	{
 		path: 'login',
@@ -47,6 +48,10 @@ const routes: Routes = [
 	{
 		path: 'guide',
 		component: GuideComponent
+	},
+	{
+		path: 'thanks',
+		component: ThanksComponent
 	},
 	{
 		path: '**',

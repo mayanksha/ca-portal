@@ -44,6 +44,7 @@ import { LinkSubmissionComponent } from './components/link-submission/link-submi
 import { GuideComponent } from './components/guide/guide.component';
 import { LeaderboardComponent } from './components/leaderboard/leaderboard.component';
 import { ContactComponent } from './components/contact/contact.component';
+import { ThanksComponent } from './components/thanks/thanks.component';
 
 @NgModule({
 	declarations: [
@@ -61,6 +62,7 @@ import { ContactComponent } from './components/contact/contact.component';
 		GuideComponent,
 		LeaderboardComponent,
 		ContactComponent,
+		ThanksComponent,
 	],
 	imports: [
 		BrowserModule,

@@ -18,6 +18,14 @@ export class TopbarComponent implements OnInit {
 		private loginService: LoginService,
 		private back: BackendService
 	) {
+		this.loginService.checkLogin()
+			.then(e => {
+				if (!e) {
+					this.router.navigate(['/login']);
+				} else {
+					console.log('You are successfully logged in!');
+				}
+			});
 		this.back.getReq('/task_count')
 			.then((val) => {
 				this.taskCount = val.count;
