@@ -10,7 +10,7 @@
 	<mat-card>
 		<div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px">
 			<img class="fb-img" [src]="post.full_picture" alt="Image">
-			<div class="mt-1 line-breaker" [innerHTML]="post.message">
+			<div class="mt-1 line-breaker" [innerHTML]="post.message | html">
 			</div>
 		</div>
 		<br>

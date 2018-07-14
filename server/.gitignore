@@ -5,7 +5,7 @@
 #Directories
 node_modules/
 encryption/
-
+devel-server.ts
 #Local Configuration files
 config/local_config.ts
 dist/

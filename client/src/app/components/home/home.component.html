@@ -3,19 +3,17 @@
 	<div class="container">
 		<div class="tasks" fxFlex="0 1 600px" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="12px">
 			<mat-card *ngFor="let task of tasks; let i = index" class="task-card" fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="5px">
-
 				<mat-card-header>
 					<!--<mat-card-title class="mat-title task-title">Task Title</mat-card-title>-->
 					<span class="mat-title task-title">{{task.title}}</span>
 				</mat-card-header>
-				<div class="task-content">
-					{{task.task}}	
+				<div class="task-content" [innerHtml]="task.task | html">
 				</div>
 				<hr style="width: 90%; margin-bottom:15px"><br>
 				<form *ngIf="!task.submitStatus" width="100%" #f="ngForm" name="{{'form'+i}}" (ngSubmit)="onSubmit(f.value, task.id)" >
-					<mat-checkbox ngModel name="checked{{i}}" #tick="ngModel">&nbsp;&nbsp;&nbsp;&nbsp; </mat-checkbox>
-					<mat-form-field class="form-width">
-						<input matInput [disabled]="tick.value == false" placeholder="Submit Link/Proof to task completion" required name="link_{{i}}" ngModel>
+					<mat-checkbox ngModel name="checked{{i}}" #tick="ngModel" [disabled]="!task.enabled">&nbsp;&nbsp;&nbsp;&nbsp; </mat-checkbox>
+					<mat-form-field class="form-width" >
+						<input matInput [disabled]="tick.value == false" [placeholder]="!task.enabled?'Disabled':'Submit Proof/Link to completion' " required name="link_{{i}}" ngModel >
 						<input matInput style="display:none" name="{{task.id}}">
 						<mat-icon matSuffix>mode_edit</mat-icon>
 					</mat-form-field>&nbsp; &nbsp;

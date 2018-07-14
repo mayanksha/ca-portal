@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FbFeedService } from '../../services/fb-feed.service';
 import { LoginService } from '../../services/login.service';
+import { HtmlPipe } from '../../pipes/html.pipe';
 
 let visited = false;
 declare var particlesJS: any;
@@ -51,7 +52,7 @@ export class FbpostsComponent implements OnInit, OnDestroy {
 		return this.feedService.getAllPosts()
 			.then((res) => {
 				this.posts = res;
-				console.log(this.posts);
+				/*console.log(this.posts);*/
 				return Promise.resolve(this.posts);
 			})
 			.catch(console.error);

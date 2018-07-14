@@ -10,24 +10,6 @@ declare var particlesJS: any;
 
 export class HomeComponent implements OnInit {
 	tasks: any[];
-	/*tasks = [{
-	 *    id : '123',
-	 *    title: 'Some title',
-	 *    task: 'Some Task HERE',
-	 *    submitStatus: 0
-	 *  },
-	 *  {
-	 *    id : '124',
-	 *    title: 'Some title',
-	 *    task: 'Some Task HERE',
-	 *    submitStatus: 0
-	 *  },
-	 *  {
-	 *    id : '125',
-	 *    title: 'Some title',
-	 *    task: 'Some Task HERE',
-	 *    submitStatus: 0
-	 *  }];*/
 
 	checked_0 = false;
 	form: any = null;
@@ -37,6 +19,7 @@ export class HomeComponent implements OnInit {
 	) {
 		this.back.getReq('/tasks')
 			.then((value) => {
+				/*console.log(value);*/
 				this.tasks = value;
 			})
 			.catch(err => console.error(err));

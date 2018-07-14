@@ -45,6 +45,7 @@ import { GuideComponent } from './components/guide/guide.component';
 import { LeaderboardComponent } from './components/leaderboard/leaderboard.component';
 import { ContactComponent } from './components/contact/contact.component';
 import { ThanksComponent } from './components/thanks/thanks.component';
+import { HtmlPipe } from './pipes/html.pipe';
 
 @NgModule({
 	declarations: [
@@ -63,6 +64,7 @@ import { ThanksComponent } from './components/thanks/thanks.component';
 		LeaderboardComponent,
 		ContactComponent,
 		ThanksComponent,
+		HtmlPipe,
 	],
 	imports: [
 		BrowserModule,
