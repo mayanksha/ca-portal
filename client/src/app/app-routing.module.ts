@@ -19,6 +19,7 @@ const routes: Routes = [
 	},
 	{
 		path: 'tasks',
+		canActivate: [AuthGuard],
 		component: HomeComponent
 	},
 	// {
@@ -27,10 +28,12 @@ const routes: Routes = [
 	// },
 	{
 		path: 'fbposts',
+		canActivate: [AuthGuard],
 		component: FbpostsComponent
 	},
 	{
 		path: 'leaderboard',
+		canActivate: [AuthGuard],
 		component: LeaderboardComponent
 	},
 	{

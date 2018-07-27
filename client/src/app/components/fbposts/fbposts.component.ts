@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FbFeedService } from '../../services/fb-feed.service';
 import { LoginService } from '../../services/login.service';
 import { HtmlPipe } from '../../pipes/html.pipe';
+import { AuthGuard } from '../../auth.guard';
 
-let visited = false;
 declare var particlesJS: any;
 
 @Component({
@@ -30,18 +30,8 @@ export class FbpostsComponent implements OnInit, OnDestroy {
 		);
 	}
 	ngOnInit() {
-		/*Promise.all([this.feedsReturned, this.loginService.loadPromise])
-		 *  .then((a) => {
-		 *    let render = document.getElementsByTagName('fb-post')[0].parentNode;
-		 *    console.log(render);
-		 *    console.log(visited);
-		 *    setTimeout(() => {
-		 *      (window as any).FB.XFBML.parse();
-		 *    }, 0);
-		 *  });*/
 	}
 	ngOnDestroy() {
-		visited = true;
 	}
 	timeDiffCalc = (a, b): number => {
 		const diff = b - a;

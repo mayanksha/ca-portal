@@ -52,29 +52,50 @@ export class LoginService {
 	}
 
 	checkLogin = (): Promise<boolean> => {
-		/*    if(this.user){
-		 *
-		 *    }*/
-		/*if(localStorage.user){
-		 *  console.log("User found ", this.user);
-		 *  return Promise.resolve(true);
-		 *}*/
 		return this.loadPromise.then(() =>
+					/*
+					* Status Codes
+					* (Normal)
+					* 1 -- User's login status was 'connected', no automatic forced logins
+					* 2 -- Token expired, so automatically logged the user in
+					* 3 -- Not authorized, Neither accessToken nor fbId present
+					*
+					* (Errors)
+					* 4 -- res.status == 'unknown'
+					* 5 -- res.status !== 'connected' while trying to re-login the
+					* 			user in performLogin (auth_expired)
+					*
+					*/
+
 			this.fb.getLoginStatus().then((res: LoginStatus) => {
 				if (res.status === 'connected') {
-					/*console.log(res.authResponse);*/
 					this.token = res.authResponse.accessToken;
 					localStorage.setItem('accessToken', this.token);
 					localStorage.setItem('facebookID', res.authResponse.userID);
-					/*localStorage.setItem('user', {
-					 *  'userId' : res.authResponse.userID,
-					 *  'token' : res.authResponse.accessToken
-					 *})
-					 *'userId' : res.authResponse.userID,*/
-					return Promise.resolve(true);
-				} else {
-					return Promise.resolve(false);
+
+					// Status Code 1
+					return Promise.resolve(!0);
+				} else if (res.status === 'authorization_expired') {
+					// Auth Expired, for this case the best is to not let the user know that his auth expired and performLogin again
+					return this.performLogin()
+						.then((s) => {
+							if (s.status === 'connected') {
+								return Promise.resolve(!2);
+							} else {
+								return Promise.resolve(!5);
+							}
+						});
+				} else if (res.status === 'not_authorized') {
+					localStorage.clear();
+					// Isn't authorized at all.
+					return Promise.resolve(!3);
+				} else if (!res || res.status === 'unknown') {
+					localStorage.clear();
+					return Promise.resolve(!4);
 				}
+			})
+			.catch(err => {
+				return Promise.reject(err);
 			})
 		);
 	}
@@ -87,11 +108,12 @@ export class LoginService {
 	}
 
 	logout(): Promise<any> {
+		localStorage.clear();
 		return this.fb.logout().then((res) => {
 			/*console.log(res);
 			 *console.log('Logged out!');*/
-			localStorage.clear();
 			Promise.resolve(true);
-		});
+		})
+		.catch(console.error);
 	}
 }
