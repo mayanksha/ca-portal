@@ -1,17 +1,15 @@
 <app-topbar></app-topbar>
 <div id="particles-js"></div>
-<div *ngIf="posts" fxLayout="column" fxLayoutAlign="center center" fxFlex="0 1 900px" class="full-content">
+<div *ngIf="posts" fxLayout="column" fxLayoutAlign="center center" fxFlex="0 1 900px" class="full-content" fxFlex.sm="80" fxFlex.md="50" fxFlex.lg="40" fxFlex.xl="35">
 
-	<div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px" class="content-box" *ngFor="let post of posts">
+	<div fxLayout="column" fxLayoutAlign="center center" class="content-box" *ngFor="let post of posts">
 		<!-- <div class="bg" *ngIf="posts" fxLayout="column" fxLayoutGap="50px" fxLayoutAlign="center center">
 		-    <fb-post *ngFor="let post of posts; let i = index" [href]="post.permalink_url" fxFlex="50" fxFlexOffset="50px"></fb-post>
 		-    <br>
 		-</div> -->
 	<mat-card>
-		<div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px">
-			<img class="fb-img" [src]="post.full_picture" alt="Image">
+			<img mat-card-image class="fb-img" [src]="post.full_picture" alt="Image">
 			<div class="mt-1 line-breaker" [innerHTML]="post.message | html">
-			</div>
 		</div>
 		<br>
 		<hr style="width: 100%;" style="">

@@ -1,13 +1,13 @@
 <mat-toolbar class="topbar" fxLayout="row">
 	<mat-icon>link</mat-icon>
-	<span fxHide.xs fxFlexOffset="10px" fxFlex="0 0 80px">E-Cell Campus Ambassadors Portal</span>
+	<span fxHide.xs  fxFlexOffset="10px" fxFlex="0 0 80px">E-Cell Campus Ambassadors Portal</span>
 	<span fxHide.gt-xs fxFlexOffset="10px" fxFlex="0 0 80px">E-Cell</span>
 	<span fxFlex></span>
-	<button mat-icon-button [matMenuTriggerFor]="menu" fxHide.gt-xs>
+	<button mat-icon-button [matMenuTriggerFor]="menu" fxHide.gt-sm>
 		<mat-icon>menu</mat-icon>
 	</button>
 
-	<div fxHide.xs fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
+	<div fxHide.xs fxHide.sm fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
 		<a mat-raised-button color="primary" [routerLink]="['/fbposts']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
 			FB Posts
 		</a>
