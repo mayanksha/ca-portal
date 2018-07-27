@@ -6,8 +6,7 @@ import { Database } from './config/database';
 import { Startup } from './interfaces/startup'; 
 import { localConfig, sheetsConfig } from './config/local_config';
 
-class DatabaseToSheets {
-
+export class DatabaseToSheets {
 	private scopes = ['https://www.googleapis.com/auth/spreadsheets'];
 	private sheets: any;
 	private db: Database;
@@ -77,7 +76,7 @@ class DatabaseToSheets {
 					valueInputOption: "RAW",
 					resource: TokenSheetBodyArray[1],
 					range: 'A2:J',
-					auth: this.JWTClient
+					auth: this.JWTClient,
 				}, (err, result) => {
 					if(err){
 						return reject(err);

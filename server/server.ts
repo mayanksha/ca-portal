@@ -9,6 +9,8 @@ import cors = require('cors');
 import assert = require('assert');
 import fs = require('fs');
 
+import { DatabaseToSheets } from './sheets_server';
+
 // Interfaces
 import { dbConfig } from './interfaces/dbConfig';
 import { Startup, Persons } from './interfaces/startup';
@@ -41,6 +43,8 @@ function handleError(error) {
 /*.catch( err => throw err);*/
 
 var db = Database.getInstance();
+var dbToSheet = new DatabaseToSheets();
+
 var app : express.Application = express();
 /*const corsOptions = {
  *  origin: ['https://ecelliitk.org', 'https://ecelliitk.org'],
@@ -57,7 +61,7 @@ app.use(bodyParser.urlencoded({ extended : false }));
 
 app.use(cors());
 
-app.get('/api/task_count', (req : express.Request, res : express.Response, next) => {
+app.get('/task_count', (req : express.Request, res : express.Response, next) => {
 	const query = `SELECT COUNT(*) FROM registrations.tasks`;
 	db.query(query)
 		.then((rows: any) => {
@@ -72,7 +76,7 @@ app.get('/api/task_count', (req : express.Request, res : express.Response, next)
 			next(err);
 		});
 })
-app.get('/api/tasks', (req : express.Request, res : express.Response, next) => {
+app.get('/tasks', (req : express.Request, res : express.Response, next) => {
 	const query = `SELECT * FROM registrations.tasks`;
 	db.query(query)
 		.then((rows: any) => {
@@ -86,7 +90,7 @@ app.get('/api/tasks', (req : express.Request, res : express.Response, next) => {
 			next(err);
 		});
 })
-app.post('/api/tasks', (req : express.Request, res : express.Response, next) => {
+app.post('/tasks', (req : express.Request, res : express.Response, next) => {
 	assert.ok(req.body.facebookID);
 	assert.ok(req.body.taskID);
 	assert.ok(req.body.link);
@@ -185,10 +189,9 @@ app.post('/register', (req : express.Request, res : express.Response) => {
 			}
 			let insert = false;
 			let deleteQuery = `DELETE FROM ${mappingTable} WHERE \`facebookID\`=${facebookID}`;
-			console.log(checkQuery);
+			/*console.log(checkQuery);*/
 			db.query(checkQuery)
 			.then((res: any) => {
-				console.log(res);
 				if(Array.from(res).length === 0)
 					insert = true;
 				return insert; 
@@ -211,35 +214,33 @@ app.post('/register', (req : express.Request, res : express.Response) => {
 								console.log(result);
 								return db.query(mappingQuery)
 									.then(res => res)
-									.catch(err => {
-										console.log(err);
-										res.status(500);
-										res.end(JSON.stringify("false"));
-									});
+									.catch(err => Promise.reject(err));
 							})
-							.catch(err => {
-								console.log(err);
-								res.status(500);
-								res.end(JSON.stringify("false"));
-							});
+							.catch(err => Promise.reject(err));
 					}
 					else {
 						// New User's fbID has been added, now added the Persons too!
 						return db.query(mappingQuery)
 							.then(res => res)
-							.catch(err => {
-								console.log(err);
-								res.status(500);
-								res.end(JSON.stringify("false"));
-							});
+							.catch(err => Promise.reject(err));
 					}
 				}
 			})
 			.then((result : any) => {
-				if(result.affectedRows === Persons.length)
+				if(result.affectedRows === Persons.length){
 					res.status(200);
-				res.end(JSON.stringify(true));
+					res.end(JSON.stringify(true));
+					return dbToSheet.writeToSheet()
+						.then((data) => data)
+						.catch(err => Promise.reject(err))	
+				}
+				else {
+					console.log("Some severe error!");
+					res.status(500);
+					res.end(JSON.stringify(false));
+				}
 			})
+			.then((data) => console.log(data))
 			.catch(err => {
 				console.log(err);
 				res.status(500);

@@ -8,6 +8,7 @@ import { localConfig } from './local_config';
 //
 export class Database {
 	public static getInstance() {
+		console.log(new Date(), " Connected to Database (getInstance)" + localConfig.database );
 		return this._instance || (this._instance = new this(localConfig, localConfig.database));
 	}
 
@@ -27,7 +28,6 @@ export class Database {
 			password: localConfig.password,
 			database: localConfig.database
 		});
-		console.log("Connected to Database " + localConfig.database );
 		/*this.connection.connect((err) => {
 		 *  if (err) {
 		 *    throw err;
