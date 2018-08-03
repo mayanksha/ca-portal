@@ -57,7 +57,151 @@ export class DatabaseToSheets {
 		})
 	}
 
-	public writeToSheet(): Promise<any> {
+	public writeToSheetUpstart(): Promise<any> {
+		return this.fetchAllData()
+		.then((data) => {
+			let body = {
+				values: data 
+			}
+			return body;
+		})
+		.then((sheetBody: any) => {
+			return this.authorize()
+				.then((tokens) => [tokens, sheetBody])
+		})
+		.then((TokenSheetBodyArray: any[]) => {
+			return new Promise((resolve, reject) => {
+				this.sheets.spreadsheets.values.update({
+					spreadsheetId: localConfig.sheet,
+					valueInputOption: "RAW",
+					resource: TokenSheetBodyArray[1],
+					range: 'A2:J',
+					auth: this.JWTClient,
+				}, (err, result) => {
+					if(err){
+						return reject(err);
+					}
+					else {
+						return resolve(result);
+					}
+				})
+			})
+				.then((result: any) => result.data)
+				.catch((err) => {
+					console.error(err);
+					return Promise.reject(err);
+				})
+		})
+	}
+	public writeToSheetPitch(): Promise<any> {
+		return this.fetchAllData()
+		.then((data) => {
+			let body = {
+				values: data 
+			}
+			return body;
+		})
+		.then((sheetBody: any) => {
+			return this.authorize()
+				.then((tokens) => [tokens, sheetBody])
+		})
+		.then((TokenSheetBodyArray: any[]) => {
+			return new Promise((resolve, reject) => {
+				this.sheets.spreadsheets.values.update({
+					spreadsheetId: localConfig.sheet,
+					valueInputOption: "RAW",
+					resource: TokenSheetBodyArray[1],
+					range: 'A2:J',
+					auth: this.JWTClient,
+				}, (err, result) => {
+					if(err){
+						return reject(err);
+					}
+					else {
+						return resolve(result);
+					}
+				})
+			})
+				.then((result: any) => result.data)
+				.catch((err) => {
+					console.error(err);
+					return Promise.reject(err);
+				})
+		})
+	}
+	public writeToSheetStock(): Promise<any> {
+		return this.fetchAllData()
+		.then((data) => {
+			let body = {
+				values: data 
+			}
+			return body;
+		})
+		.then((sheetBody: any) => {
+			return this.authorize()
+				.then((tokens) => [tokens, sheetBody])
+		})
+		.then((TokenSheetBodyArray: any[]) => {
+			return new Promise((resolve, reject) => {
+				this.sheets.spreadsheets.values.update({
+					spreadsheetId: localConfig.sheet,
+					valueInputOption: "RAW",
+					resource: TokenSheetBodyArray[1],
+					range: 'A2:J',
+					auth: this.JWTClient,
+				}, (err, result) => {
+					if(err){
+						return reject(err);
+					}
+					else {
+						return resolve(result);
+					}
+				})
+			})
+				.then((result: any) => result.data)
+				.catch((err) => {
+					console.error(err);
+					return Promise.reject(err);
+				})
+		})
+	}
+	public writeToSheetDecrypt(): Promise<any> {
+		return this.fetchAllData()
+		.then((data) => {
+			let body = {
+				values: data 
+			}
+			return body;
+		})
+		.then((sheetBody: any) => {
+			return this.authorize()
+				.then((tokens) => [tokens, sheetBody])
+		})
+		.then((TokenSheetBodyArray: any[]) => {
+			return new Promise((resolve, reject) => {
+				this.sheets.spreadsheets.values.update({
+					spreadsheetId: localConfig.sheet,
+					valueInputOption: "RAW",
+					resource: TokenSheetBodyArray[1],
+					range: 'A2:J',
+					auth: this.JWTClient,
+				}, (err, result) => {
+					if(err){
+						return reject(err);
+					}
+					else {
+						return resolve(result);
+					}
+				})
+			})
+				.then((result: any) => result.data)
+				.catch((err) => {
+					console.error(err);
+					return Promise.reject(err);
+				})
+		})
+	}
+	public writeToSheetBizquiz(): Promise<any> {
 		return this.fetchAllData()
 		.then((data) => {
 			let body = {
@@ -94,10 +238,10 @@ export class DatabaseToSheets {
 		})
 	}
 }
-const DTS = new DatabaseToSheets();
-setTimeout(() => {
-	DTS.writeToSheet();
-}, 100);
+/*const DTS = new DatabaseToSheets();
+ *setTimeout(() => {
+ *  DTS.writeToSheet();
+ *}, 100);*/
 /*setInterval(() => {
  *  DTS.writeToSheet();
  *}, 5000);*/

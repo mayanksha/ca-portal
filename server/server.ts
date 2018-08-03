@@ -20,28 +20,6 @@ import { Database } from './config/database';
 import { logger } from './config/logger';
 import { localConfig as Config } from './config/local_config';
 
-/*import https = require('https');
- *var privkey = fs.readFileSync('/home/msharma/git/intern/server/encryption/localhost.key'); 
- *var cert = fs.readFileSync('/home/msharma/git/intern/server/encryption/localhost.crt');
- *const credentials: https.ServerOptions = {key : privkey, cert: cert};*/
-function diff_time(a : Date, b : Date) : string {
-	let t1 = a.getTime();
-	let t2 = b.getTime();
-	let msec = t1 - t2;
-	let sec = Math.round(msec / 1000);
-	let min = Math.round(sec / 60);
-	let hrs = Math.round(min / 60);
-	let days = Math.round(hrs / 24);
-	return (days.toString())+ ":" + (hrs%24).toString() + ":" + ((min%24)%60).toString();
-}
-
-function handleError(error) {
-	if (error instanceof Error){
-		console.error(error);
-	}
-}
-/*.catch( err => throw err);*/
-
 var db = Database.getInstance();
 var dbToSheet = new DatabaseToSheets();
 
@@ -100,13 +78,13 @@ app.post('/tasks', (req : express.Request, res : express.Response, next) => {
 	const link = db.escape(req.body.link);
 
 	const findQuery = `SELECT * FROM registrations.task_completions 
-	 WHERE facebookID=${facebookID} AND taskID=${taskID}`;
+	WHERE facebookID=${facebookID} AND taskID=${taskID}`;
 
 	const insertQuery = `INSERT INTO \`registrations\`.\`task_completions\` (\`facebookID\`, \`taskID\`, \`link\`)
 	VALUES (${facebookID}, ${taskID}, ${link})`;
 
 	const updateQuery = `UPDATE \`registrations\`.\`task_completions\` 
-	 SET \`link\`=${link} WHERE facebookID=${facebookID} AND taskID=${taskID}`;
+	SET \`link\`=${link} WHERE facebookID=${facebookID} AND taskID=${taskID}`;
 
 	db.query(findQuery)
 		.then((rows: any): boolean => {
@@ -230,7 +208,7 @@ app.post('/register', (req : express.Request, res : express.Response) => {
 				if(result.affectedRows === Persons.length){
 					res.status(200);
 					res.end(JSON.stringify(true));
-					return dbToSheet.writeToSheet()
+					return dbToSheet.writeToSheetUpstart()
 						.then((data) => data)
 						.catch(err => Promise.reject(err))	
 				}
@@ -247,9 +225,151 @@ app.post('/register', (req : express.Request, res : express.Response) => {
 				res.end(JSON.stringify("false"));
 			})
 });
-app.get('/', (req, res)=> {
-	res.end("HI!");
+
+app.post('/register/stock', (req: express.Request, res: express.Response, next) => {
+	assert.ok(req.body.teamName);
+	assert.ok(req.body.leaderName);
+	assert.ok(req.body.collegeName);
+	assert.ok(req.body.leaderPhone);
+	assert.ok(req.body.leaderEmail);
+	assert.ok(req.body.name2);
+	assert.ok(req.body.phone2);
+	assert.ok(req.body.facebookID);
+
+	const teamName = db.escape(req.body.teamName);
+	const collegeName = db.escape(req.body.collegeName);
+	const leaderPhone = db.escape(req.body.leaderPhone);
+	const phone2 = db.escape(req.body.phone2);
+	const leaderEmail = db.escape(req.body.leaderEmail);
+	const leaderName = db.escape(req.body.leaderName);
+	const name2 = db.escape(req.body.name2);
+	const name3 = db.escape(req.body.name3);
+	const name4 = db.escape(req.body.name4);
+	const name5 = db.escape(req.body.name5);
+	const facebookID = db.escape(req.body.facebookID);
+
+
+	let insertQuery = `INSERT INTO registrations.stock
+	(teamName, collegeName, leaderPhone, phone2, leaderEmail, leaderName, name2, name3, name4, name5, facebookID, last_update)
+	VALUES(${teamName},${collegeName}, ${leaderPhone}, ${phone2},
+		${leaderEmail},
+		${leaderName}, ${name2}, ${name3}, ${name4}, ${name5},
+		${facebookID}, CURRENT_TIMESTAMP);`
+
+	db.query(insertQuery)
+		.then((rows: any) => {
+			console.log(rows);
+			res.status(200);
+			res.end(JSON.stringify(true));
+		})
+		.catch((err) => next(err));
 })
+
+app.post('/register/pitch', (req: express.Request, res: express.Response, next) => {
+	assert.ok(req.body.teamName);
+	assert.ok(req.body.name1);
+	assert.ok(req.body.phone1);
+	assert.ok(req.body.institute);
+	assert.ok(req.body.industry);
+	assert.ok(req.body.patent);
+	assert.ok(req.body.prodAnalysis);
+	assert.ok(req.body.scope);
+	assert.ok(req.body.whyLaunch);
+	assert.ok(req.body.seedFund);
+	assert.ok(req.body.facebookID);
+
+	let teamName = db.escape(req.body.teamName);
+	let name1 = db.escape(req.body.name1);
+	let name2 = db.escape(req.body.name2);
+	let name3 = db.escape(req.body.name3);
+	let name4 = db.escape(req.body.name4);
+	let name5 = db.escape(req.body.name5);
+	let institute = db.escape(req.body.institute);
+	let email = db.escape(req.body.email);
+	let phone1 = db.escape(req.body.phone1);
+	let phone2 = db.escape(req.body.phone2);
+	let industry = db.escape(req.body.industry);
+	let prodAnalysis = db.escape(req.body.prodAnalysis);
+	let scope = db.escape(req.body.scope);
+	let patent = db.escape(req.body.patent);
+	let whyLaunch = db.escape(req.body.whyLaunch);
+	let seedFund = db.escape(req.body.seedFund);
+	let facebookID = db.escape(req.body.facebookID);
+
+	let insertQuery = 
+`INSERT INTO registrations.pitch
+	(teamName, name1, name2, name3, name4, name5, institute, email, phone1, phone2, industry, prodAnalysis, \`scope\`, patent, whyLaunch, seedFund, facebookID, last_update)
+	VALUES(${teamName}, ${name1}, ${name2}, ${name3}, ${name4}, ${name5}, ${institute}, ${email}, ${phone1}, ${phone2}, ${industry}, ${prodAnalysis}, ${scope}, ${patent}, ${whyLaunch}, ${seedFund}, ${facebookID}, CURRENT_TIMESTAMP);`
+
+	db.query(insertQuery)
+		.then((rows: any) => {
+			console.log(rows);
+			res.status(200);
+			res.end(JSON.stringify(true));
+		})
+		.catch((err) => next(err));
+
+});
+/*Decrypt Related Handler*/
+app.post('/register/decrypt', (req: express.Request, res: express.Response, next) => {
+	assert.ok(req.body.teamName);
+	assert.ok(req.body.email);
+	assert.ok(req.body.name1);
+	assert.ok(req.body.phone1);
+	assert.ok(req.body.mode);
+	assert.ok(req.body.facebookID);
+
+	let teamName = db.escape(req.body.teamName);
+	let email = db.escape(req.body.email);
+	let name1 = db.escape(req.body.name1);
+	let name2 = db.escape(req.body.name2);
+	let name3 = db.escape(req.body.name3);
+	let phone1 = db.escape(req.body.phone1);
+	let phone2 = db.escape(req.body.phone2);
+	let mode = db.escape(req.body.mode);
+	let facebookID = db.escape(req.body.facebookID);
+
+	let insertQuery = `INSERT INTO registrations.decrypt
+	(teamName, email, phone1, phone2, name1, name2, name3, mode, facebookID, last_update)
+	VALUES(${teamName}, ${email}, ${phone1}, ${phone2}, ${name1}, ${name2}, ${name3}, ${mode}, ${facebookID}, CURRENT_TIMESTAMP)`;
+
+	db.query(insertQuery)
+		.then((rows: any) => {
+			console.log(rows);
+			res.status(200);
+			res.end(JSON.stringify(true));
+		})
+		.catch((err) => next(err));
+ });
+app.post('/register/bizquiz', (req: express.Request, res: express.Response, next) => {
+	assert.ok(req.body.teamName);
+	assert.ok(req.body.name1);
+	assert.ok(req.body.phone1);
+	assert.ok(req.body.email);
+	assert.ok(req.body.facebookID);
+
+	let teamName = db.escape(req.body.teamName);
+	let email = db.escape(req.body.email);
+	let name1 = db.escape(req.body.name1);
+	let name2 = db.escape(req.body.name2);
+	let name3 = db.escape(req.body.name3);
+	let phone1 = db.escape(req.body.phone1);
+	let phone2 = db.escape(req.body.phone2);
+	let facebookID = db.escape(req.body.facebookID);
+
+	let insertQuery = `INSERT INTO registrations.bizquiz
+	(teamName, email, phone1, phone2, name1, name2, name3, facebookID, last_update)
+	VALUES(${teamName}, ${email}, ${phone1}, ${phone2}, ${name1}, ${name2}, ${name3}, ${facebookID}, CURRENT_TIMESTAMP)`;
+
+	db.query(insertQuery)
+		.then((rows: any) => {
+			console.log(rows);
+			res.status(200);
+			res.end(JSON.stringify(true));
+		})
+		.catch((err) => next(err));
+ });
+
 app.post('/postLink', (req : express.Request, res : express.Response) => {
 	/*console.log(req.body);*/
 	assert.ok(req.body.facebookID);
@@ -326,8 +446,11 @@ app.use('/*', (err, req, res, next) => {
 		res.end('500 - INTERNAL SERVER ERROR!');
 	}
 });
-/*const server = https.createServer(credentials, app);*/
+/*let server = https.createServer(credentials, app);*/
+
 app.listen(9000, (err : express.ErrorRequestHandler) => {
-	if(err) throw err;
-	else console.log("Server Listening on Port 9000");
-})
+	if (err) 
+		throw err;
+	else 
+			console.log("Server Listening on Port 9000");
+});
