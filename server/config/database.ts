@@ -66,8 +66,7 @@ export class Database {
 					}) 
 				})
 			})
-			.then(results => results)
-			.catch(err => console.error(err));	
+			.catch(err => Promise.reject(err));
 	}
 
 

@@ -72,7 +72,7 @@ export class DatabaseToSheets {
 		.then((TokenSheetBodyArray: any[]) => {
 			return new Promise((resolve, reject) => {
 				this.sheets.spreadsheets.values.update({
-					spreadsheetId: localConfig.sheet,
+					spreadsheetId: localConfig.upstartSheet,
 					valueInputOption: "RAW",
 					resource: TokenSheetBodyArray[1],
 					range: 'A2:J',
@@ -108,7 +108,7 @@ export class DatabaseToSheets {
 		.then((TokenSheetBodyArray: any[]) => {
 			return new Promise((resolve, reject) => {
 				this.sheets.spreadsheets.values.update({
-					spreadsheetId: localConfig.sheet,
+					spreadsheetId: localConfig.upstartSheet,
 					valueInputOption: "RAW",
 					resource: TokenSheetBodyArray[1],
 					range: 'A2:J',
@@ -144,7 +144,7 @@ export class DatabaseToSheets {
 		.then((TokenSheetBodyArray: any[]) => {
 			return new Promise((resolve, reject) => {
 				this.sheets.spreadsheets.values.update({
-					spreadsheetId: localConfig.sheet,
+					spreadsheetId: localConfig.upstartSheet,
 					valueInputOption: "RAW",
 					resource: TokenSheetBodyArray[1],
 					range: 'A2:J',
@@ -180,7 +180,7 @@ export class DatabaseToSheets {
 		.then((TokenSheetBodyArray: any[]) => {
 			return new Promise((resolve, reject) => {
 				this.sheets.spreadsheets.values.update({
-					spreadsheetId: localConfig.sheet,
+					spreadsheetId: localConfig.upstartSheet,
 					valueInputOption: "RAW",
 					resource: TokenSheetBodyArray[1],
 					range: 'A2:J',
@@ -216,7 +216,7 @@ export class DatabaseToSheets {
 		.then((TokenSheetBodyArray: any[]) => {
 			return new Promise((resolve, reject) => {
 				this.sheets.spreadsheets.values.update({
-					spreadsheetId: localConfig.sheet,
+					spreadsheetId: localConfig.upstartSheet,
 					valueInputOption: "RAW",
 					resource: TokenSheetBodyArray[1],
 					range: 'A2:J',
