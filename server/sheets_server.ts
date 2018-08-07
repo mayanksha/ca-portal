@@ -11,7 +11,7 @@ export class DatabaseToSheets {
 	private sheets: any;
 	private db: Database;
 
-	public JWTClient;
+	private JWTClient;
 	constructor() {
 		this.JWTClient = new google.auth.JWT(sheetsConfig.client_email,
 			undefined, 
@@ -22,7 +22,7 @@ export class DatabaseToSheets {
 		this.sheets = google.sheets('v4');
 	}
 
-	private fetchAllData(): Promise<any> {
+	private fetchUpstartData(): Promise<any> {
 		const query = `SELECT up.id,up.facebookID, up.startupName, up.email, up.numPersons,
 		up.phone, up.location, up.eventName, ipm.PersonName, links.link
 		FROM registrations.upstart as up inner
@@ -47,6 +47,22 @@ export class DatabaseToSheets {
 		})
 	}
 
+	private fetchData(tableName: string): Promise<any> {
+		const query = 	
+		`SELECT * FROM registrations.${tableName} WHERE id IN (SELECT MAX(id) FROM registrations.${tableName} GROUP BY facebookID)`;
+		
+return this.db.query(query)
+		.then(rows => {
+			let values: Startup[] = JSON.parse(JSON.stringify(rows));
+			values = values.map((elem) => (Object as any).values(elem));
+			/*console.log(values);*/
+			return values;
+		})
+		.catch(err => {
+			/*logger.log('error', err);*/
+			console.error(err);
+		})
+	}
 	private authorize(): Promise<any> {
 		return new Promise((resolve, reject) => {
 			this.JWTClient.authorize((err, tokens) => {
@@ -57,190 +73,88 @@ export class DatabaseToSheets {
 		})
 	}
 
-	public writeToSheetUpstart(): Promise<any> {
-		return this.fetchAllData()
-		.then((data) => {
-			let body = {
-				values: data 
-			}
-			return body;
-		})
-		.then((sheetBody: any) => {
-			return this.authorize()
-				.then((tokens) => [tokens, sheetBody])
-		})
-		.then((TokenSheetBodyArray: any[]) => {
-			return new Promise((resolve, reject) => {
-				this.sheets.spreadsheets.values.update({
-					spreadsheetId: localConfig.upstartSheet,
-					valueInputOption: "RAW",
-					resource: TokenSheetBodyArray[1],
-					range: 'A2:J',
-					auth: this.JWTClient,
-				}, (err, result) => {
-					if(err){
-						return reject(err);
+	public updateSheet(event: string): Promise<any> {
+		if (event === 'upstart'){
+			return this.fetchUpstartData()
+				.then((data) => {
+					let body = {
+						values: data 
 					}
-					else {
-						return resolve(result);
+					return body;
+				})
+				.then((sheetBody: any) => {
+					return this.authorize()
+						.then((tokens) => [tokens, sheetBody])
+				})
+				.then((TokenSheetBodyArray: any[]) => {
+					return new Promise((resolve, reject) => {
+						this.sheets.spreadsheets.values.update({
+							spreadsheetId: localConfig.events[event].sheetId,
+							valueInputOption: "RAW",
+							resource: TokenSheetBodyArray[1],
+							range: 'A2:J',
+							auth: this.JWTClient,
+						}, (err, result) => {
+							if(err){
+								return reject(err);
+							}
+							else {
+								return resolve(result);
+							}
+						})
+					})
+						.then((result: any) => result.data)
+						.catch((err) => {
+							console.error(err);
+							return Promise.reject(err);
+						})
+				})
+
+		}
+		else {
+			return this.fetchData(localConfig.events[event].table)
+				.then((data) => {
+					let body = {
+						values: data 
 					}
+					return body;
 				})
-			})
-				.then((result: any) => result.data)
-				.catch((err) => {
-					console.error(err);
-					return Promise.reject(err);
+				.then((sheetBody: any) => {
+					return this.authorize()
+						.then((tokens) => [tokens, sheetBody])
 				})
-		})
-	}
-	public writeToSheetPitch(): Promise<any> {
-		return this.fetchAllData()
-		.then((data) => {
-			let body = {
-				values: data 
-			}
-			return body;
-		})
-		.then((sheetBody: any) => {
-			return this.authorize()
-				.then((tokens) => [tokens, sheetBody])
-		})
-		.then((TokenSheetBodyArray: any[]) => {
-			return new Promise((resolve, reject) => {
-				this.sheets.spreadsheets.values.update({
-					spreadsheetId: localConfig.upstartSheet,
-					valueInputOption: "RAW",
-					resource: TokenSheetBodyArray[1],
-					range: 'A2:J',
-					auth: this.JWTClient,
-				}, (err, result) => {
-					if(err){
-						return reject(err);
-					}
-					else {
-						return resolve(result);
-					}
+				.then((TokenSheetBodyArray: any[]) => {
+					return new Promise((resolve, reject) => {
+						this.sheets.spreadsheets.values.update({
+							spreadsheetId: localConfig.events[event].sheetId,
+							valueInputOption: "RAW",
+							resource: TokenSheetBodyArray[1],
+							range: 'A2:Z',
+							auth: this.JWTClient,
+						}, (err, result) => {
+							if(err){
+								return reject(err);
+							}
+							else {
+								return resolve(result);
+							}
+						})
+					})
+						.then((result: any) => result.data)
+						.catch((err) => {
+							console.error(err);
+							return Promise.reject(err);
+						})
 				})
-			})
-				.then((result: any) => result.data)
-				.catch((err) => {
-					console.error(err);
-					return Promise.reject(err);
-				})
-		})
-	}
-	public writeToSheetStock(): Promise<any> {
-		return this.fetchAllData()
-		.then((data) => {
-			let body = {
-				values: data 
-			}
-			return body;
-		})
-		.then((sheetBody: any) => {
-			return this.authorize()
-				.then((tokens) => [tokens, sheetBody])
-		})
-		.then((TokenSheetBodyArray: any[]) => {
-			return new Promise((resolve, reject) => {
-				this.sheets.spreadsheets.values.update({
-					spreadsheetId: localConfig.upstartSheet,
-					valueInputOption: "RAW",
-					resource: TokenSheetBodyArray[1],
-					range: 'A2:J',
-					auth: this.JWTClient,
-				}, (err, result) => {
-					if(err){
-						return reject(err);
-					}
-					else {
-						return resolve(result);
-					}
-				})
-			})
-				.then((result: any) => result.data)
-				.catch((err) => {
-					console.error(err);
-					return Promise.reject(err);
-				})
-		})
-	}
-	public writeToSheetDecrypt(): Promise<any> {
-		return this.fetchAllData()
-		.then((data) => {
-			let body = {
-				values: data 
-			}
-			return body;
-		})
-		.then((sheetBody: any) => {
-			return this.authorize()
-				.then((tokens) => [tokens, sheetBody])
-		})
-		.then((TokenSheetBodyArray: any[]) => {
-			return new Promise((resolve, reject) => {
-				this.sheets.spreadsheets.values.update({
-					spreadsheetId: localConfig.upstartSheet,
-					valueInputOption: "RAW",
-					resource: TokenSheetBodyArray[1],
-					range: 'A2:J',
-					auth: this.JWTClient,
-				}, (err, result) => {
-					if(err){
-						return reject(err);
-					}
-					else {
-						return resolve(result);
-					}
-				})
-			})
-				.then((result: any) => result.data)
-				.catch((err) => {
-					console.error(err);
-					return Promise.reject(err);
-				})
-		})
-	}
-	public writeToSheetBizquiz(): Promise<any> {
-		return this.fetchAllData()
-		.then((data) => {
-			let body = {
-				values: data 
-			}
-			return body;
-		})
-		.then((sheetBody: any) => {
-			return this.authorize()
-				.then((tokens) => [tokens, sheetBody])
-		})
-		.then((TokenSheetBodyArray: any[]) => {
-			return new Promise((resolve, reject) => {
-				this.sheets.spreadsheets.values.update({
-					spreadsheetId: localConfig.upstartSheet,
-					valueInputOption: "RAW",
-					resource: TokenSheetBodyArray[1],
-					range: 'A2:J',
-					auth: this.JWTClient,
-				}, (err, result) => {
-					if(err){
-						return reject(err);
-					}
-					else {
-						return resolve(result);
-					}
-				})
-			})
-				.then((result: any) => result.data)
-				.catch((err) => {
-					console.error(err);
-					return Promise.reject(err);
-				})
-		})
+				
+		}
 	}
 }
 /*const DTS = new DatabaseToSheets();
  *setTimeout(() => {
- *  DTS.writeToSheet();
+ *  Object.keys(localConfig.events).forEach(e => {
+ *    DTS.updateSheet(e);
+ *  })
  *}, 100);*/
 /*setInterval(() => {
  *  DTS.writeToSheet();

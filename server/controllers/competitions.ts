@@ -116,7 +116,7 @@ export class CompetitionControl {
 					if(result.affectedRows === Persons.length){
 						res.status(200);
 						res.end(JSON.stringify(true));
-						return this.dbToSheet.writeToSheetUpstart()
+						return this.dbToSheet.updateSheet('upstart')
 							.then((data) => data)
 							.catch(err => Promise.reject(err))	
 					}
@@ -166,9 +166,14 @@ export class CompetitionControl {
 
 		this.db.query(insertQuery)
 			.then((rows: any) => {
-				console.log(rows);
 				res.status(200);
 				res.end(JSON.stringify(true));
+				return rows;
+			})
+			.then(() => {
+				return this.dbToSheet.updateSheet('stock')
+					.then((data) => data)
+					.catch(err => Promise.reject(err))	
 			})
 			.catch((err) => next(err));
 	}
@@ -211,12 +216,16 @@ export class CompetitionControl {
 
 		this.db.query(insertQuery)
 			.then((rows: any) => {
-				console.log(rows);
 				res.status(200);
 				res.end(JSON.stringify(true));
+				return rows;
+			})
+			.then(() => {
+				return this.dbToSheet.updateSheet('pitch')
+					.then((data) => data)
+					.catch(err => Promise.reject(err))	
 			})
 			.catch((err) => next(err));
-
 	}
 
 	public decryptHandler = (req: Request, res: Response, next : NextFunction) => {
@@ -243,9 +252,14 @@ export class CompetitionControl {
 
 		this.db.query(insertQuery)
 			.then((rows: any) => {
-				console.log(rows);
 				res.status(200);
 				res.end(JSON.stringify(true));
+				return rows;
+			})
+			.then(() => {
+				return this.dbToSheet.updateSheet('decrypt')
+					.then((data) => data)
+					.catch(err => Promise.reject(err))	
 			})
 			.catch((err) => next(err));
 	}
@@ -272,9 +286,14 @@ export class CompetitionControl {
 
 		this.db.query(insertQuery)
 			.then((rows: any) => {
-				console.log(rows);
 				res.status(200);
 				res.end(JSON.stringify(true));
+				return rows;
+			})
+			.then(() => {
+				return this.dbToSheet.updateSheet('bizquiz')
+					.then((data) => data)
+					.catch(err => Promise.reject(err))	
 			})
 			.catch((err) => next(err));
 	}
