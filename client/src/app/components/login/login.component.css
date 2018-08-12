@@ -9,7 +9,9 @@
 }
 
 .big-heading {
+  font-size: 3em;
   font-weight: 500;
+  font-family: Roboto
 }
 
 .description {

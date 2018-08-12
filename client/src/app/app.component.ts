@@ -8,7 +8,7 @@ import { ScriptService } from './services/script.service';
 })
 
 export class AppComponent {
-	title = 'E-Summit 2018 Registration Portal';
+	title = 'E-Cell, IIT Kanpur Campus Ambassador\'s Portal';
 	constructor(
 		private script: ScriptService,
 	) {}
