@@ -31,7 +31,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { LoginComponent } from './components/login/login.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AuthGuard } from './auth.guard';
-import { HomeComponent } from './components/home/home.component';
+import { TasksComponent } from './components/tasks/tasks.component';
 import { LogoutComponent } from './components/logout/logout.component';
 import { TopbarComponent } from './components/topbar/topbar.component';
 import { ScriptService } from './services/script.service';
@@ -46,13 +46,14 @@ import { LeaderboardComponent } from './components/leaderboard/leaderboard.compo
 import { ContactComponent } from './components/contact/contact.component';
 import { ThanksComponent } from './components/thanks/thanks.component';
 import { HtmlPipe } from './pipes/html.pipe';
+import { OnetimeRegisterComponent } from './components/onetime-register/onetime-register.component';
 
 @NgModule({
 	declarations: [
 		AppComponent,
 		LoginComponent,
 		DashboardComponent,
-		HomeComponent,
+		TasksComponent,
 		LogoutComponent,
 		TopbarComponent,
 		FbpostsComponent,
@@ -65,6 +66,7 @@ import { HtmlPipe } from './pipes/html.pipe';
 		ContactComponent,
 		ThanksComponent,
 		HtmlPipe,
+		OnetimeRegisterComponent,
 	],
 	imports: [
 		BrowserModule,

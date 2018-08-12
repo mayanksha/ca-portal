@@ -3,12 +3,12 @@ import { BackendService } from '../../services/backend.service';
 declare var particlesJS: any;
 
 @Component({
-	selector: 'app-home',
-	templateUrl: './home.component.html',
-	styleUrls: ['./home.component.css']
+	selector: 'app-tasks',
+	templateUrl: './tasks.component.html',
+	styleUrls: ['./tasks.component.css']
 })
 
-export class HomeComponent implements OnInit {
+export class TasksComponent implements OnInit {
 	tasks: any[];
 
 	checked_0 = false;

@@ -5,8 +5,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 })
 export class BackendService {
 	facebookID: string;
-	private endPoint = 'https://msharma.me/api';
-	/*private endPoint = 'https://localhost:9000/api';*/
+	/*private endPoint = 'https://msharma.me/api/';*/
+	private endPoint = 'https://localhost:9000/api/';
 	constructor(
 		private http: HttpClient
 	) {

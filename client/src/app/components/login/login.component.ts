@@ -48,7 +48,7 @@ export class LoginComponent implements OnInit {
 						this.router.navigateByUrl('/fbposts');
 					} else {
 						this.error = true;
-						this.router.navigateByUrl('/login');
+						this.spinnerState = false;
 					}
 				});
 		} else { this.spinnerState = false; }

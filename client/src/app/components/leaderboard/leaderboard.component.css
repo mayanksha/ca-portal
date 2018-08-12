@@ -31,3 +31,6 @@ p {
 	Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 	font-size: 1.2em;
 }
+.pointDetails {
+	text-align: left;
+}

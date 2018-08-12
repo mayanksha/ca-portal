@@ -34,9 +34,9 @@ export class TopbarComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		if (this.router.url === '/home') {
-			this.search = false;
-		}
+		/*if (this.router.url === '/tasks') {
+		 *  this.search = false;
+		 *}*/
 	}
 	logOut() {
 		this.logOutPressed = true;

@@ -1,0 +1,31 @@
+.mat-card {
+	margin-top : 10em;
+}
+
+h2 {
+    margin-top: 10px !important;
+    margin-bottom: 0px !important;
+    font-size: 3em;
+    font-weight: 300;
+    font-family: Roboto;
+}
+p {
+    font-family: Roboto;
+}
+
+
+@media screen and (min-width: 480px) {
+	.mat-form-field {
+		width : 90% !important;
+	}
+}
+@media screen and (min-width: 768px) {
+	.mat-form-field {
+		width : 90% !important;
+	}
+}
+@media screen and (min-width: 1024px) {
+	.mat-form-field {
+		width : 60% !important;
+	}
+}

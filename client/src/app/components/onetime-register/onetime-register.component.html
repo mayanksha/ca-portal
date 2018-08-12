@@ -1,0 +1,47 @@
+<div>
+	<div fxLayout="row" fxLayoutAlign="center center">
+		<mat-card fxFlex.xs="90" fxFlex.sm="70" fxFlex="50" >
+
+			<h2>Hi <br> {{userName}}!</h2>
+
+			<p>Ready to take a stroll down the Entrepreneurial Path?</p>
+			<p style="margin-top: 0px">Ready to be a Campus Ambassador?</p>
+			<form [formGroup]="form">
+				<mat-form-field class="mainContainer">
+					<input matInput placeholder="Full Name" formControlName="name">
+					<mat-error *ngIf="emailFormControl.hasError('required')">
+						This field is <strong>required</strong>
+					</mat-error>
+				</mat-form-field>
+				<br>	
+
+				<mat-form-field class="mainContainer">
+					<input matInput placeholder="Phone Number" formControlName="phone">
+					<mat-error *ngIf="emailFormControl.hasError('required')">
+						This field is <strong>required</strong>. (10 digits)
+					</mat-error>
+				</mat-form-field>
+				<br>	
+
+				<mat-form-field class="mainContainer">
+					<input matInput placeholder="Email Address" formControlName="email" type="email">
+					<mat-hint align="start"><strong>This email must match the one which you used at the time of registering as CA.</strong></mat-hint>
+					<mat-error *ngIf="emailFormControl.hasError('required')">
+						This field is <strong>required</strong>
+					</mat-error>
+				</mat-form-field>
+				<br>
+
+				<br>
+				<br>
+				<br>
+				<br>
+				<br>
+				<button (click)="onSubmit()" type="submit" mat-raised-button color="primary" [disabled]="!form.valid">Submit</button>
+				{{ form.value | json }}<br>
+			{{ form.valid | json }}<br>
+			</form>
+		</mat-card>
+	</div>
+	<app-topbar></app-topbar>
+</div>

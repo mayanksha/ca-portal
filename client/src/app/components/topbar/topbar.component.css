@@ -1,4 +1,6 @@
 .topbar {
+
+    width: 100%  !important;
 	z-index: 100;
 	background: black linear-gradient(
 	to right,
