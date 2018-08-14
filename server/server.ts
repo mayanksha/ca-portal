@@ -7,6 +7,7 @@ import crypto = require('crypto');
 import session = require('express-session');
 import cors = require('cors');
 import assert = require('assert');
+import winston = require('winston');
 import fs = require('fs');
 
 import { DatabaseToSheets } from './sheets_server';
@@ -15,12 +16,8 @@ import { DatabaseToSheets } from './sheets_server';
 import { dbConfig } from './interfaces/dbConfig';
 import { Database } from './config/database';
 
-/*import https = require('https');
- *var privkey = fs.readFileSync('/home/msharma/.ssh/localhost.key'); 
- *var cert = fs.readFileSync('/home/msharma/.ssh/localhost.crt');
- *const credentials: https.ServerOptions = {key : privkey, cert: cert};*/
 // Config
-import { logger } from './config/logger';
+import { logger, morganOptions } from './config/logger';
 import { localConfig as Config } from './config/local_config';
 
 // Routers 
@@ -37,7 +34,7 @@ var app : express.Application = express();
  *  origin: 'https://localhost:4200',
  *  optionsSuccessStatus: 200
  *}*/
-app.use(httpLogger('combined'));
+app.use(httpLogger('combined', morganOptions));
 app.use(session({ secret : Config.sessionSecret }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended : false }));
@@ -120,7 +117,75 @@ app.post('/tasks', (req : express.Request, res : express.Response, next) => {
 		})
 })
 app.use('/register', CompetitionRoutes.createRouter());
-app.post('/checkCaUser', (req : express.Request, res : express.Response, next) => {
+app.post('/api/townscript', (req : express.Request, res : express.Response, next) => {
+	let data: any[];
+	if (Array.isArray(req.body)){
+		data = req.body;
+	}
+	else {
+		data = Array.of(req.body);
+	}
+	let data_new: any = data.map((e: any) => {
+		let obj = {};
+		obj['userEmailId'] = db.escape(e['userEmailId']);
+		obj['discountCode'] = db.escape(e['discountCode']);
+		obj['discountAmount'] = db.escape(e['discountAmount']);
+		obj['uniqueOrderId'] = db.escape(e['uniqueOrderId']);
+		obj['registrationTimestamp'] = db.escape(e['registrationTimestamp']);
+		obj['eventName'] = db.escape(e['eventName']);
+		obj['eventCode'] = db.escape(e['eventCode']);
+		return obj;
+	})
+	const length = data_new.length;
+	const incrementQuery = `UPDATE registrations.\`ca-registrations\` SET points = points + ${length * 50} WHERE referralID=${data_new[0]['discountCode']}`;
+
+	let mappingQuery = `INSERT INTO registrations.referralID_TSreg_mapping` +
+		` (\`uniqueOrderId\`, referralID, registrationTimestamp, userEmailId, eventName, eventCode) VALUES `;
+
+	for(let i = 0; i < length; i++){
+		mappingQuery += `(${data_new[i].uniqueOrderId}, ${data_new[i].discountCode}, ${data_new[i].registrationTimestamp}, ${data_new[i].userEmailId},${data_new[i].eventName}, ${data_new[i].eventCode})`;
+		if(i != length - 1)
+			mappingQuery += ',';
+	}
+
+	db.query('START TRANSACTION')
+		.then(() => {
+			return db.query(incrementQuery)
+			/*.then(rows => rows)
+				*.catch((err) => {
+					*  return Promise.reject(err);
+					*})*/
+		})
+		.then((rows: any) => {
+			return rows.affectedRows;
+		})
+		.then((affectedRows) => {
+			if (affectedRows === 1)
+				return db.query(mappingQuery)
+			else throw new Error('ER_TRANSACTION FAILED');
+		})
+		.then((rows) => {
+			return db.query('COMMIT')
+				.then(e => e)
+				.catch(Promise.reject);
+		})
+		.then((rows) => {
+			res.status(200);
+			res.end();
+		})
+		.catch((err) => {
+			process.nextTick(() => {
+				db.query('ROLLBACK')
+					.then((rows) => {
+						console.log("ROLLBACK!", rows);
+					})
+					.catch(next)
+			})
+			next(err);
+		})
+});
+
+app.post('/api/checkCaUser', (req : express.Request, res : express.Response, next) => {
 	console.log(req.body);
 	assert.ok(req.body.facebookID);
 	const facebookID = db.escape(req.body.facebookID);
@@ -169,24 +234,24 @@ app.post('/registerCaUser', (req : express.Request, res : express.Response, next
 			res.end();
 			return insertID;
 			/*}
-			 *else if (len == 1){
-			 *  res.status(200);
-			 *  res.send(true);
-			 *  res.end();
-			 *}
-			 *else {
-			 *  let err = new Error('Critical Problem. More than one CA with same email ID.');
-			 *  err.name = 'ER_DUPE_ENTRIES';
-			 *  throw err;
-			 *}*/
-		})
-		.then((insertID: number) => {
-			const referralID = 'CA' + (1000 + insertID);
-			console.log(referralID);
-			const CAquery = `UPDATE registrations.\`ca-registrations\` SET referralID=${db.escape(referralID)}
-WHERE id=${db.escape(insertID)}`;
-			return db.query(CAquery)
-		})
+			*else if (len == 1){
+				*  res.status(200);
+				*  res.send(true);
+				*  res.end();
+				*}
+		*else {
+			*  let err = new Error('Critical Problem. More than one CA with same email ID.');
+			*  err.name = 'ER_DUPE_ENTRIES';
+			*  throw err;
+			*}*/
+})
+	.then((insertID: number) => {
+		const referralID = 'CA' + (1000 + insertID);
+		console.log(referralID);
+		const CAquery = `UPDATE registrations.\`ca-registrations\` SET referralID=${db.escape(referralID)}
+		WHERE id=${db.escape(insertID)}`;
+		return db.query(CAquery)
+	})
 		.then((rows: any) => {
 			if (rows.affectedRows === 1){
 				return db.query('COMMIT')
@@ -201,15 +266,19 @@ WHERE id=${db.escape(insertID)}`;
 		});
 })
 
-app.post('/getReferralID', (req : express.Request, res : express.Response, next)=> {
+app.post('/api/getCaInfo', (req : express.Request, res : express.Response, next)=> {
 	assert.ok(req.body.facebookID);
 	const facebookID = db.escape(req.body.facebookID);
-	const query = `SELECT referralID FROM registrations.\`ca-registrations\` WHERE facebookID=${facebookID}`;
+	const query = `SELECT referralID, points FROM registrations.\`ca-registrations\` WHERE facebookID=${facebookID}`;
 	db.query(query)
 		.then((rows: any) => {
 			res.status(200);
 			console.log(rows[0].referralID);
-			res.send(JSON.stringify(rows[0].referralID));
+			const res_body = {
+				referralID: rows[0].referralID,
+				points: rows[0].points
+			}
+			res.send(JSON.stringify(res_body));
 			res.end();
 		})
 		.catch(next);
@@ -281,11 +350,10 @@ app.use('/*', (err, req, res, next) => {
 		res.end('500 - INTERNAL SERVER ERROR!');
 	}
 });
-/*let server = https.createServer(credentials, app);*/
 
 app.listen(9000, (err : express.ErrorRequestHandler) => {
 	if (err) 
 		throw err;
 	else 
-			console.log("Server Listening on Port 9000");
+		console.log("Server Listening on Port 9000");
 });
