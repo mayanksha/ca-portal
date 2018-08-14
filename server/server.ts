@@ -15,6 +15,10 @@ import { DatabaseToSheets } from './sheets_server';
 import { dbConfig } from './interfaces/dbConfig';
 import { Database } from './config/database';
 
+/*import https = require('https');
+ *var privkey = fs.readFileSync('/home/msharma/.ssh/localhost.key'); 
+ *var cert = fs.readFileSync('/home/msharma/.ssh/localhost.crt');
+ *const credentials: https.ServerOptions = {key : privkey, cert: cert};*/
 // Config
 import { logger } from './config/logger';
 import { localConfig as Config } from './config/local_config';
@@ -40,7 +44,7 @@ app.use(bodyParser.urlencoded({ extended : false }));
 
 app.use(cors());
 
-app.get('/task_count', (req : express.Request, res : express.Response, next) => {
+app.get('/api/task_count', (req : express.Request, res : express.Response, next) => {
 	const query = `SELECT COUNT(*) FROM registrations.tasks`;
 	db.query(query)
 		.then((rows: any) => {
@@ -116,7 +120,100 @@ app.post('/tasks', (req : express.Request, res : express.Response, next) => {
 		})
 })
 app.use('/register', CompetitionRoutes.createRouter());
+app.post('/checkCaUser', (req : express.Request, res : express.Response, next) => {
+	console.log(req.body);
+	assert.ok(req.body.facebookID);
+	const facebookID = db.escape(req.body.facebookID);
+	const query = `SELECT * FROM registrations.\`ca-registrations\` WHERE facebookID=${facebookID}`;
 
+	db.query(query)
+		.then((rows: any) => {
+			let len = Array.from(rows).length;
+			if (len == 0){
+				res.status(200);
+				res.send(false);
+				res.end();
+			}
+			else if (len == 1){
+				res.status(200);
+				res.send(true);
+				res.end();
+			}
+			else {
+				let err = new Error('Critical Problem. More than one CA with same email ID.');
+				err.name = 'ER_DUPE_ENTRIES';
+				throw err;
+			}
+		})
+		.catch(err => next(err));
+})
+
+app.post('/registerCaUser', (req : express.Request, res : express.Response, next) => {
+	assert.ok(req.body.email);
+	assert.ok(req.body.name);
+	assert.ok(req.body.phone);
+	assert.ok(req.body.facebookID);
+
+	const facebookID = db.escape(req.body.facebookID);
+	const email = db.escape(req.body.email);
+	const name = db.escape(req.body.name);
+	const phone = db.escape(req.body.phone);
+	const query = `INSERT INTO registrations.\`ca-registrations\` (name, email, phone, facebookID) VALUES(${name}, ${email}, ${phone}, ${facebookID})`;
+
+	db.query('START TRANSACTION')
+		.then(() => {
+			return db.query(query)
+		})
+		.then((rows: any) => {
+			const insertID = rows.insertId;
+			res.end();
+			return insertID;
+			/*}
+			 *else if (len == 1){
+			 *  res.status(200);
+			 *  res.send(true);
+			 *  res.end();
+			 *}
+			 *else {
+			 *  let err = new Error('Critical Problem. More than one CA with same email ID.');
+			 *  err.name = 'ER_DUPE_ENTRIES';
+			 *  throw err;
+			 *}*/
+		})
+		.then((insertID: number) => {
+			const referralID = 'CA' + (1000 + insertID);
+			console.log(referralID);
+			const CAquery = `UPDATE registrations.\`ca-registrations\` SET referralID=${db.escape(referralID)}
+WHERE id=${db.escape(insertID)}`;
+			return db.query(CAquery)
+		})
+		.then((rows: any) => {
+			if (rows.affectedRows === 1){
+				return db.query('COMMIT')
+			}
+			else throw new Error('ER_WRONG_CA_INSERTION')
+		})	
+		.catch(err => {
+			db.query('ROLLBACK')
+				.then(console.log)
+				.catch(console.error);
+			next(err)
+		});
+})
+
+app.post('/getReferralID', (req : express.Request, res : express.Response, next)=> {
+	assert.ok(req.body.facebookID);
+	const facebookID = db.escape(req.body.facebookID);
+	const query = `SELECT referralID FROM registrations.\`ca-registrations\` WHERE facebookID=${facebookID}`;
+	db.query(query)
+		.then((rows: any) => {
+			res.status(200);
+			console.log(rows[0].referralID);
+			res.send(JSON.stringify(rows[0].referralID));
+			res.end();
+		})
+		.catch(next);
+})
 app.post('/postLink', (req : express.Request, res : express.Response, next) => {
 	/*console.log(req.body);*/
 	assert.ok(req.body.facebookID);
