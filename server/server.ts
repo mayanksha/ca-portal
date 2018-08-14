@@ -41,7 +41,7 @@ app.use(bodyParser.urlencoded({ extended : false }));
 
 app.use(cors());
 
-app.get('/api/task_count', (req : express.Request, res : express.Response, next) => {
+app.get('/task_count', (req : express.Request, res : express.Response, next) => {
 	const query = `SELECT COUNT(*) FROM registrations.tasks`;
 	db.query(query)
 		.then((rows: any) => {
@@ -117,13 +117,17 @@ app.post('/tasks', (req : express.Request, res : express.Response, next) => {
 		})
 })
 app.use('/register', CompetitionRoutes.createRouter());
-app.post('/api/townscript', (req : express.Request, res : express.Response, next) => {
+app.post('/townscript', (req : express.Request, res : express.Response, next) => {
+	assert.ok(req.body.data);
+
+	// Townscript hands data over in stringified form
+	let body = JSON.parse(req.body.data);
 	let data: any[];
-	if (Array.isArray(req.body)){
-		data = req.body;
+	if (Array.isArray(body)){
+		data = body;
 	}
 	else {
-		data = Array.of(req.body);
+		data = Array.of(body);
 	}
 	let data_new: any = data.map((e: any) => {
 		let obj = {};
@@ -148,26 +152,30 @@ app.post('/api/townscript', (req : express.Request, res : express.Response, next
 			mappingQuery += ',';
 	}
 
+	console.log(incrementQuery);
+	console.log(mappingQuery);
 	db.query('START TRANSACTION')
 		.then(() => {
 			return db.query(incrementQuery)
-			/*.then(rows => rows)
-				*.catch((err) => {
-					*  return Promise.reject(err);
-					*})*/
+			.then(rows => rows)
+			.catch((err) => {
+					console.error(err);
+					return Promise.reject(err);
+				})
 		})
 		.then((rows: any) => {
+			console.log(rows);
 			return rows.affectedRows;
 		})
 		.then((affectedRows) => {
 			if (affectedRows === 1)
 				return db.query(mappingQuery)
-			else throw new Error('ER_TRANSACTION FAILED');
+			else return Promise.reject(new Error('ER_TOWSCRIPT_TRANSACTION_FAILED'));
 		})
 		.then((rows) => {
 			return db.query('COMMIT')
 				.then(e => e)
-				.catch(Promise.reject);
+				.catch(err => Promise.reject(err));
 		})
 		.then((rows) => {
 			res.status(200);
@@ -185,7 +193,7 @@ app.post('/api/townscript', (req : express.Request, res : express.Response, next
 		})
 });
 
-app.post('/api/checkCaUser', (req : express.Request, res : express.Response, next) => {
+app.post('/checkCaUser', (req : express.Request, res : express.Response, next) => {
 	console.log(req.body);
 	assert.ok(req.body.facebookID);
 	const facebookID = db.escape(req.body.facebookID);
@@ -266,7 +274,7 @@ app.post('/registerCaUser', (req : express.Request, res : express.Response, next
 		});
 })
 
-app.post('/api/getCaInfo', (req : express.Request, res : express.Response, next)=> {
+app.post('/getCaInfo', (req : express.Request, res : express.Response, next)=> {
 	assert.ok(req.body.facebookID);
 	const facebookID = db.escape(req.body.facebookID);
 	const query = `SELECT referralID, points FROM registrations.\`ca-registrations\` WHERE facebookID=${facebookID}`;
@@ -350,6 +358,7 @@ app.use('/*', (err, req, res, next) => {
 		res.end('500 - INTERNAL SERVER ERROR!');
 	}
 });
+/*let server = https.createServer(credentials, app);*/
 
 app.listen(9000, (err : express.ErrorRequestHandler) => {
 	if (err) 
