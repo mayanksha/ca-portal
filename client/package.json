@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "starthttps": "ng serve --ssl true --ssl-key ~/git/intern/server/encryption/localhost.key --ssl-cert ~/git/intern/server/encryption/localhost.crt",
+    "starthttps": "ng serve --ssl true --ssl-key /home/msharma/.ssh/localhost.key --ssl-cert /home/msharma/.ssh/localhost.crt",
     "build": "ng build",
     "prod": "ng build --prod --aot --base-href ./",
     "test": "ng test",

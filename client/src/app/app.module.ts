@@ -20,6 +20,7 @@ import {
 	MatDialogModule,
 	MatProgressSpinnerModule,
 	MatBadgeModule,
+	MatSnackBarModule,
 	MatCheckboxModule
 } from '@angular/material';
 
@@ -92,7 +93,8 @@ import { OnetimeRegisterComponent } from './components/onetime-register/onetime-
 		MatDialogModule,
 		MatProgressSpinnerModule,
 		MatBadgeModule,
-		MatCheckboxModule
+		MatCheckboxModule,
+		MatSnackBarModule
 	],
 	providers: [
 		LoginService,

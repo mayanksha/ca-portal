@@ -29,12 +29,12 @@ const routes: Routes = [
 	},
 	{
 		path : 'initial',
-		canActivate: [AuthGuard],
+		canActivate: [],
 		component : OnetimeRegisterComponent
 	},
 	{
 		path: 'fbposts',
-		canActivate: [CheckRegisterGuard, AuthGuard],
+		canActivate: [CheckRegisterGuard],
 		component: FbpostsComponent
 	},
 	{
@@ -53,12 +53,12 @@ const routes: Routes = [
 	},
 	{
 		path: 'guidelines',
-		canActivate: [AuthGuard, CheckRegisterGuard],
+		canActivate: [CheckRegisterGuard, AuthGuard],
 		component: GuideComponent
 	},
 	{
 		path: 'contact',
-		canActivate: [AuthGuard, CheckRegisterGuard],
+		canActivate: [CheckRegisterGuard, AuthGuard],
 		component: ContactComponent
 	},
 	{

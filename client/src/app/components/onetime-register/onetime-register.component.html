@@ -1,44 +1,51 @@
 <div>
 	<div fxLayout="row" fxLayoutAlign="center center">
 		<mat-card fxFlex.xs="90" fxFlex.sm="70" fxFlex="40" >
+			<div *ngIf="!success">
+				<h2>Hi <br> {{userName}}!</h2>
 
-			<h2>Hi <br> {{userName}}!</h2>
+				<!--<p>Ready to take a stroll down the Entrepreneurial Path?</p>-->
+				<p style="margin-top: 10px">Ready to be a Campus Ambassador?</p>
+				<form [formGroup]="form">
+					<mat-form-field class="mainContainer">
+						<input matInput placeholder="Full Name" formControlName="name" required>
+						<mat-error *ngIf="emailFormControl.hasError('required')">
+							This field is <strong>required</strong>
+						</mat-error>
+					</mat-form-field>
+					<br>	
 
-			<!--<p>Ready to take a stroll down the Entrepreneurial Path?</p>-->
-			<p style="margin-top: 10px">Ready to be a Campus Ambassador?</p>
-			<form [formGroup]="form">
-				<mat-form-field class="mainContainer">
-					<input matInput placeholder="Full Name" formControlName="name" required>
-					<mat-error *ngIf="emailFormControl.hasError('required')">
-						This field is <strong>required</strong>
-					</mat-error>
-				</mat-form-field>
-				<br>	
+					<mat-form-field class="mainContainer">
+						<input matInput placeholder="Phone Number" formControlName="phone" required>
+						<mat-error *ngIf="emailFormControl.hasError('required')">
+							This field is <strong>required</strong>. (10 digits)
+						</mat-error>
+					</mat-form-field>
+					<br>	
 
-				<mat-form-field class="mainContainer">
-					<input matInput placeholder="Phone Number" formControlName="phone" required>
-					<mat-error *ngIf="emailFormControl.hasError('required')">
-						This field is <strong>required</strong>. (10 digits)
-					</mat-error>
-				</mat-form-field>
-				<br>	
-
-				<mat-form-field class="mainContainer">
-					<input matInput placeholder="Email Address" formControlName="email" type="email" required>
-					<!--<mat-hint align="start"><strong>This email must match the one which you used at the time of registering as CA.</strong></mat-hint>-->
-					<mat-error *ngIf="emailFormControl.hasError('required')">
-						This field is <strong>required</strong>
-					</mat-error>
-				</mat-form-field>
-				<br>
-				<p id="note">
-				<strong>Note: This is a One-Time Registration only. Your email must match the one you gave earlier at the time of Registration as a Campus Ambassador.</strong>
-				</p>
-				<br>
-				<button (click)="onSubmit()" type="submit" mat-raised-button color="primary" [disabled]="!form.valid">Submit</button>
-			<!--  {{ form.value | json }}<br>
-				 -{{ form.valid | json }}<br>-->
-			</form>
+					<mat-form-field class="mainContainer">
+						<input matInput placeholder="Email Address" formControlName="email" type="email" required>
+						<!--<mat-hint align="start"><strong>This email must match the one which you used at the time of registering as CA.</strong></mat-hint>-->
+						<mat-error *ngIf="emailFormControl.hasError('required')">
+							This field is <strong>required</strong>
+						</mat-error>
+					</mat-form-field>
+					<br>
+					<p id="note">
+					<strong>Note: This is a One-Time Registration only. Your email must match the one you gave earlier at the time of Registration as a Campus Ambassador.</strong>
+					</p>
+					<br>
+					<button (click)="onSubmit()" type="submit" mat-raised-button color="primary" [disabled]="!form.valid">Submit</button>
+					<!--  {{ form.value | json }}<br>
+			 -{{ form.valid | json }}<br>-->
+				</form>
+			</div>
+			<div fxFlex="100" *ngIf="success" fxLayout="column" fxLayoutAlign="center center">
+				<img src={{red}}><br>
+				<h4>{{failureString}}</h4>
+				<h4>Mayank Sharma: 9461240034 <br><br>
+				Utkarsh Barsaiyan: 7318018609</h4>
+			</div>
 		</mat-card>
 	</div>
 	<app-topbar></app-topbar>
