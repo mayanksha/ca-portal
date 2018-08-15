@@ -9,4 +9,5 @@ devel-server.ts
 #Local Configuration files
 config/local_config.ts
 dist/
+logs/
 #config/cert.ts

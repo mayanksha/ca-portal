@@ -222,7 +222,7 @@ app.post('/checkCaUser', (req : express.Request, res : express.Response, next) =
 				err.name = 'ER_DUP_ENTRY';
 				err.message = `Critical Problem. More than one CA with same email ID.
 					facebookID=${facebookID}
-				  SQLQuery = ${query}`;
+				SQLQuery = ${query}`;
 				logger.error([facebookID, query, err]);
 				throw err;
 			}
@@ -232,51 +232,58 @@ app.post('/checkCaUser', (req : express.Request, res : express.Response, next) =
 
 app.post('/registerCaUser', 
 	(req : express.Request, res : express.Response, next) => {
-	assert.ok(req.body.email);
-	assert.ok(req.body.name);
-	assert.ok(req.body.phone);
-	assert.ok(req.body.facebookID);
+		assert.ok(req.body.email);
+		assert.ok(req.body.name);
+		assert.ok(req.body.phone);
+		assert.ok(req.body.facebookID);
 
-	const facebookID = db.escape(req.body.facebookID);
-	const email = db.escape(req.body.email);
-	const name = db.escape(req.body.name);
-	const phone = db.escape(req.body.phone);
-	const query = `INSERT INTO registrations.\`ca-registrations\` (name, email, phone, facebookID) VALUES(${name}, ${email}, ${phone}, ${facebookID})`;
+		const facebookID = db.escape(req.body.facebookID);
+		const email = db.escape(req.body.email);
+		const name = db.escape(req.body.name);
+		const phone = db.escape(req.body.phone);
+		const query = `INSERT INTO registrations.\`ca-registrations\` (name, email, phone, facebookID) VALUES(${name}, ${email}, ${phone}, ${facebookID})`;
 
-	db.query('START TRANSACTION')
-		.then(() => {
-			return db.query(query)
-		})
-		.then((rows: any) => {
-			const insertID = rows.insertId;
-			return insertID;
-		})
-		.then((insertID: number) => {
-			const referralID = 'CA' + (1000 + insertID);
-			console.log(referralID);
-			const CAquery = `UPDATE registrations.\`ca-registrations\` SET referralID=${db.escape(referralID)}
-			WHERE id=${db.escape(insertID)}`;
-			return db.query(CAquery)
-		})
-		.then((rows: any) => {
-			if (rows.affectedRows === 1){
-				res.send(true);
-				res.end();
-				return db.query('COMMIT')
-			}
-			else {
-				let err = new Error('ER_DUP_ENTRY');
-				err.message = `SQLQuery = ${query}`;
-				throw err;
-			} 
-		})	
-		.catch(err => {
-			db.query('ROLLBACK')
-				.then(() => logger.info(`Rollback @ SQLQuery: ${query}`))
-				.catch(next);
-			next(err)
-		});
-})
+		db.query('START TRANSACTION')
+			.then(() => {
+				return db.query(query)
+					.then((rows) => rows)
+					.catch((err) => Promise.reject(err))
+			})
+			.then((rows: any) => {
+				const insertID = rows.insertId;
+				return insertID;
+			})
+			.then((insertID: number) => {
+				const referralID = 'CA' + (1000 + insertID);
+				const CAquery = `UPDATE registrations.\`ca-registrations\` SET referralID=${db.escape(referralID)}
+				WHERE id=${db.escape(insertID)}`;
+				return db.query(CAquery)
+					.then((rows) => rows)
+					.catch(err => Promise.reject(err))
+			})
+			.then((rows: any) => {
+				if (rows.affectedRows === 1){
+					res.send(true);
+					res.end();
+					return db.query('COMMIT')
+						.then((rows) => rows)
+						.catch(err => Promise.reject(err))
+				}
+				else {
+					let err = new Error('ER_DUP_ENTRY');
+					err.message = `SQLQuery = ${query}`;
+					throw err;
+				} 
+			})	
+			.catch(err => {
+				process.nextTick(() => {
+					db.query('ROLLBACK')
+						.then(() => logger.info(`Rollback @ SQLQuery: ${query}`))
+						.catch(next);
+				})
+				next(err)
+			});
+	})
 
 app.post('/getCaInfo', (req : express.Request, res : express.Response, next)=> {
 	assert.ok(req.body.facebookID);
