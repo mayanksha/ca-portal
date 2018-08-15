@@ -61,7 +61,7 @@ app.get('/task_count', (req : express.Request, res : express.Response, next) => 
 		});
 })
 app.get('/tasks', (req : express.Request, res : express.Response, next) => {
-	const query = `SELECT * FROM registrations.tasks`;
+	const query = `SELECT * FROM registrations.tasks ORDER BY ID DESC`;
 	db.query(query)
 		.then((rows: any) => {
 			res.status(200);
@@ -368,9 +368,9 @@ app.use('/*', (err, req, res, next) => {
 		res.end('500 - INTERNAL SERVER ERROR!');
 	}
 });
-let server = https.createServer(certOptions, app);
+/*let server = https.createServer(certOptions, app);*/
 
-server.listen(9000, (err : express.ErrorRequestHandler) => {
+app.listen(9000, (err : express.ErrorRequestHandler) => {
 	if (err) 
 		throw err;
 	else 
