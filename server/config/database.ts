@@ -8,7 +8,6 @@ import { localConfig } from './local_config';
 //
 export class Database {
 	public static getInstance() {
-		console.log(new Date(), " Connected to Database (getInstance)" + localConfig.database );
 		return this._instance || (this._instance = new this(localConfig, localConfig.database));
 	}
 
@@ -18,10 +17,11 @@ export class Database {
 	private pool: mysql.Pool;
 
 	constructor(config: dbConfig, database: string) {
+		console.log(new Date(), " Connected to Database (getInstance)" + localConfig.database );
 		config.database = database;
 		/*this.connection  = mysql.createConnection(config);*/
 		this.pool = mysql.createPool({
-			connectionLimit: 10,
+			connectionLimit: 20,
 			host: localConfig.host,
 			port : localConfig.port,
 			user: localConfig.user,

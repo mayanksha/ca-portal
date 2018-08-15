@@ -23,8 +23,13 @@ export var logger= winston.createLogger({
 			filename: '../logs/console.log',
 			level: 'info',
 		}),
-		new winston.transports.Console({
+		new (winston.transports.Console as any)({
 			level: 'info',
+			timestamp: tsFormat(),
+			handleExceptions: true,
+			showLevel : false,
+			prettyPrint: true,
+			colorize: true 
 		})
 	],
 	exitOnError: false

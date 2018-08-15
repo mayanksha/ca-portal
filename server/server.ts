@@ -9,13 +9,14 @@ import cors = require('cors');
 import assert = require('assert');
 import winston = require('winston');
 import fs = require('fs');
-
 import { DatabaseToSheets } from './sheets_server';
 
 // Interfaces
 import { dbConfig } from './interfaces/dbConfig';
 import { Database } from './config/database';
 
+import https = require('https');
+import { certOptions } from './config/cert';
 // Config
 import { logger, morganOptions } from './config/logger';
 import { localConfig as Config } from './config/local_config';
@@ -36,10 +37,13 @@ var app : express.Application = express();
  *}*/
 app.use(httpLogger('combined', morganOptions));
 app.use(session({ secret : Config.sessionSecret }));
+
+// Enable Cors
+app.use(cors());
+// Enable OPTIONS requests
+app.options('*', cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended : false }));
-
-app.use(cors());
 
 app.get('/task_count', (req : express.Request, res : express.Response, next) => {
 	const query = `SELECT COUNT(*) FROM registrations.tasks`;
@@ -158,8 +162,8 @@ app.post('/townscript', (req : express.Request, res : express.Response, next) =>
 	db.query('START TRANSACTION')
 		.then(() => {
 			return db.query(incrementQuery)
-			.then(rows => rows)
-			.catch((err) => {
+				.then(rows => rows)
+				.catch((err) => {
 					console.error(err);
 					return Promise.reject(err);
 				})
@@ -214,15 +218,20 @@ app.post('/checkCaUser', (req : express.Request, res : express.Response, next) =
 				res.end();
 			}
 			else {
-				let err = new Error('Critical Problem. More than one CA with same email ID.');
-				err.name = 'ER_DUPE_ENTRIES';
+				let err = new Error('');
+				err.name = 'ER_DUP_ENTRY';
+				err.message = `Critical Problem. More than one CA with same email ID.
+					facebookID=${facebookID}
+				  SQLQuery = ${query}`;
+				logger.error([facebookID, query, err]);
 				throw err;
 			}
 		})
 		.catch(err => next(err));
 })
 
-app.post('/registerCaUser', (req : express.Request, res : express.Response, next) => {
+app.post('/registerCaUser', 
+	(req : express.Request, res : express.Response, next) => {
 	assert.ok(req.body.email);
 	assert.ok(req.body.name);
 	assert.ok(req.body.phone);
@@ -240,37 +249,31 @@ app.post('/registerCaUser', (req : express.Request, res : express.Response, next
 		})
 		.then((rows: any) => {
 			const insertID = rows.insertId;
-			res.end();
 			return insertID;
-			/*}
-			*else if (len == 1){
-				*  res.status(200);
-				*  res.send(true);
-				*  res.end();
-				*}
-		*else {
-			*  let err = new Error('Critical Problem. More than one CA with same email ID.');
-			*  err.name = 'ER_DUPE_ENTRIES';
-			*  throw err;
-			*}*/
-})
-	.then((insertID: number) => {
-		const referralID = 'CA' + (1000 + insertID);
-		console.log(referralID);
-		const CAquery = `UPDATE registrations.\`ca-registrations\` SET referralID=${db.escape(referralID)}
-		WHERE id=${db.escape(insertID)}`;
-		return db.query(CAquery)
-	})
+		})
+		.then((insertID: number) => {
+			const referralID = 'CA' + (1000 + insertID);
+			console.log(referralID);
+			const CAquery = `UPDATE registrations.\`ca-registrations\` SET referralID=${db.escape(referralID)}
+			WHERE id=${db.escape(insertID)}`;
+			return db.query(CAquery)
+		})
 		.then((rows: any) => {
 			if (rows.affectedRows === 1){
+				res.send(true);
+				res.end();
 				return db.query('COMMIT')
 			}
-			else throw new Error('ER_WRONG_CA_INSERTION')
+			else {
+				let err = new Error('ER_DUP_ENTRY');
+				err.message = `SQLQuery = ${query}`;
+				throw err;
+			} 
 		})	
 		.catch(err => {
 			db.query('ROLLBACK')
-				.then(console.log)
-				.catch(console.error);
+				.then(() => logger.info(`Rollback @ SQLQuery: ${query}`))
+				.catch(next);
 			next(err)
 		});
 })
@@ -341,15 +344,21 @@ app.use('/*', (req : express.Request, res : express.Response) => {
 })
 
 app.use('/*', (err, req, res, next) => {
+	logger.error(err);
 	// Assertions errors are wrong user inputs
 	if(err.name === 'SyntaxError' || 
 		err.code === 'ERR_ASSERTION' || 
 		err.code === 'ER_DATA_TOO_LONG'){
-		console.error(err);
+		console.error(err.name);
 
 		// Bad HTTP Request
 		res.status(400);
-		res.end();
+		res.end('400 - BAD REQUEST');
+	}
+	else if (err.code === 'ER_DUP_ENTRY') {
+		// Bad HTTP Request
+		res.status(409);
+		res.end('409 - BAD REQUEST');
 	}
 	else {
 		console.error(err);
@@ -359,9 +368,9 @@ app.use('/*', (err, req, res, next) => {
 		res.end('500 - INTERNAL SERVER ERROR!');
 	}
 });
-/*let server = https.createServer(credentials, app);*/
+let server = https.createServer(certOptions, app);
 
-app.listen(9000, (err : express.ErrorRequestHandler) => {
+server.listen(9000, (err : express.ErrorRequestHandler) => {
 	if (err) 
 		throw err;
 	else 
