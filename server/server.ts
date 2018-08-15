@@ -138,16 +138,17 @@ app.post('/townscript', (req : express.Request, res : express.Response, next) =>
 		obj['registrationTimestamp'] = db.escape(e['registrationTimestamp']);
 		obj['eventName'] = db.escape(e['eventName']);
 		obj['eventCode'] = db.escape(e['eventCode']);
+		obj['ticketName'] = db.escape(e['ticketName']);
 		return obj;
 	})
 	const length = data_new.length;
 	const incrementQuery = `UPDATE registrations.\`ca-registrations\` SET points = points + ${length * 50} WHERE referralID=${data_new[0]['discountCode']}`;
 
 	let mappingQuery = `INSERT INTO registrations.referralID_TSreg_mapping` +
-		` (\`uniqueOrderId\`, referralID, registrationTimestamp, userEmailId, eventName, eventCode) VALUES `;
+		` (\`uniqueOrderId\`, referralID, registrationTimestamp, userEmailId, eventName, eventCode, ticketName) VALUES `;
 
 	for(let i = 0; i < length; i++){
-		mappingQuery += `(${data_new[i].uniqueOrderId}, ${data_new[i].discountCode}, ${data_new[i].registrationTimestamp}, ${data_new[i].userEmailId},${data_new[i].eventName}, ${data_new[i].eventCode})`;
+		mappingQuery += `(${data_new[i].uniqueOrderId}, ${data_new[i].discountCode}, ${data_new[i].registrationTimestamp}, ${data_new[i].userEmailId},${data_new[i].eventName}, ${data_new[i].eventCode}, ${data_new[i].ticketName})`;
 		if(i != length - 1)
 			mappingQuery += ',';
 	}
