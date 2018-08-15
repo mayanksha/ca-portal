@@ -31,7 +31,7 @@
 			<mat-icon>exit_to_app</mat-icon>
 		</button>
 	</a>
-	<mat-progress-spinner [diameter]="40" *ngIf="logOutPressed" color="primary" mode="indeterminate" value="50">
+	<mat-progress-spinner fxFlexOffset="1" [diameter]="30" *ngIf="logOutPressed" color="primary" mode="indeterminate" value="50">
 	</mat-progress-spinner>
 </mat-toolbar>
 
@@ -45,7 +45,7 @@
 	<button mat-menu-item [routerLink]="['/leaderboard']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
 		Leaderboard
 	</button>
-	<button mat-menu-item [routerLink]="['/guide']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+	<button mat-menu-item [routerLink]="['/guidelines']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
 		Guidelines
 	</button>
 	<button mat-menu-item color="primary" [routerLink]="['/contact']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">

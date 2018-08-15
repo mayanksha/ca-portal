@@ -7,7 +7,8 @@ import { BackendService } from '../../services/backend.service';
 	styleUrls: ['./leaderboard.component.css']
 })
 export class LeaderboardComponent implements OnInit {
-	referralID = localStorage.getItem('referralID') || '';
+	referralID = 'Fetching...';
+	totalScore = 'Fetching...';
 	facebookID = localStorage.getItem('facebookID') || '';
 	constructor(
 		private backend: BackendService
@@ -15,9 +16,10 @@ export class LeaderboardComponent implements OnInit {
 		const body = {
 			'facebookID': this.facebookID
 		};
-		this.backend.postReq('getReferralID', body)
-			.then((refID) => {
-				this.referralID = refID;
+		this.backend.postReq('getCaInfo', body)
+			.then(({referralID, points}) => {
+				this.referralID = referralID;
+				this.totalScore = points;
 			})
 			.catch(console.error);
 	}
