@@ -48,8 +48,13 @@ export class DatabaseToSheets {
 	}
 
 	private fetchData(tableName: string): Promise<any> {
-		const query = 	
-		`SELECT * FROM registrations.${tableName} WHERE id IN (SELECT MAX(id) FROM registrations.${tableName} GROUP BY facebookID)`;
+		let query: string;
+		if (tableName !== 'pitch')
+			 query = 	
+			`SELECT * FROM registrations.${tableName} WHERE id IN (SELECT MAX(id) FROM registrations.${tableName} GROUP BY facebookID)`;
+		else query = 
+		`SELECT ss.*, li.link FROM registrations.links as li RIGHT JOIN (SELECT * FROM registrations.pitch  as pitch WHERE id IN (SELECT MAX(id) FROM registrations.pitch GROUP BY facebookID)) ss
+ON ss.facebookID=li.facebookID`;
 		
 return this.db.query(query)
 		.then(rows => {
@@ -92,7 +97,7 @@ return this.db.query(query)
 							spreadsheetId: localConfig.events[event].sheetId,
 							valueInputOption: "RAW",
 							resource: TokenSheetBodyArray[1],
-							range: 'A2:J',
+							range: 'A2:L',
 							auth: this.JWTClient,
 						}, (err, result) => {
 							if(err){
@@ -150,12 +155,12 @@ return this.db.query(query)
 		}
 	}
 }
-/*const DTS = new DatabaseToSheets();
- *setTimeout(() => {
- *  Object.keys(localConfig.events).forEach(e => {
- *    DTS.updateSheet(e);
- *  })
- *}, 100);*/
+const DTS = new DatabaseToSheets();
+setTimeout(() => {
+	Object.keys(localConfig.events).forEach(e => {
+		DTS.updateSheet(e);
+	})
+}, 100);
 /*setInterval(() => {
  *  DTS.writeToSheet();
  *}, 5000);*/

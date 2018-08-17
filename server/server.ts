@@ -241,28 +241,24 @@ app.post('/registerCaUser',
 		const email = db.escape(req.body.email);
 		const name = db.escape(req.body.name);
 		const phone = db.escape(req.body.phone);
-		const query = `INSERT INTO registrations.\`ca-registrations\` (name, email, phone, facebookID) VALUES(${name}, ${email}, ${phone}, ${facebookID})`;
+		const query = `INSERT INTO registrations.\`ca-registrations_1\` (name, email, phone, facebookID) VALUES(${name}, ${email}, ${phone}, ${facebookID})`;
 
 		db.query('START TRANSACTION')
 			.then(() => {
 				return db.query(query)
-					.then((rows) => rows)
+					.then((rows: any) => rows.insertId)
 					.catch((err) => Promise.reject(err))
 			})
-			.then((rows: any) => {
-				const insertID = rows.insertId;
-				return insertID;
-			})
 			.then((insertID: number) => {
-				const referralID = 'CA' + (1000 + insertID);
-				const CAquery = `UPDATE registrations.\`ca-registrations\` SET referralID=${db.escape(referralID)}
+				const referralID = 'CA' + (1000 + 490 + insertID);
+				const CAquery = `UPDATE registrations.\`ca-registrations_1\` SET referralID=${db.escape(referralID)}
 				WHERE id=${db.escape(insertID)}`;
 				return db.query(CAquery)
-					.then((rows) => rows)
+					.then((rows: any) => rows.affectedRows)
 					.catch(err => Promise.reject(err))
 			})
-			.then((rows: any) => {
-				if (rows.affectedRows === 1){
+			.then((affectedRows: any) => {
+				if (affectedRows === 1){
 					res.send(true);
 					res.end();
 					return db.query('COMMIT')
@@ -375,9 +371,9 @@ app.use('/*', (err, req, res, next) => {
 		res.end('500 - INTERNAL SERVER ERROR!');
 	}
 });
-/*let server = https.createServer(certOptions, app);*/
+let server = https.createServer(certOptions, app);
 
-app.listen(9000, (err : express.ErrorRequestHandler) => {
+server.listen(9000, (err : express.ErrorRequestHandler) => {
 	if (err) 
 		throw err;
 	else 
