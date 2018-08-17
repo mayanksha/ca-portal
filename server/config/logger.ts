@@ -1,19 +1,11 @@
 import winston = require('winston');
 import stream = require('stream');
 import morgan = require('morgan');
+
 const tsFormat = () => (new Date()).toLocaleTimeString();
-export var logger= winston.createLogger({
-	/*levels: {
-	 *  info: 0,
-	 *  ok : 1,
-	 *  error: 2
-	 *},*/
+
+export const logger = winston.createLogger({
 	transports: [
-		/*new winston.transports.Console({
-		 *  stderrLevels: ['error'],
-		 *  colorize: true,
-		 *  timestamp: tsFormat
-		 *}),*/
 		new winston.transports.File({
 			filename: '../logs/error.log',
 			level: 'error',
@@ -30,14 +22,9 @@ export var logger= winston.createLogger({
 			showLevel : false,
 			prettyPrint: true,
 			colorize: true 
-		})
+		}),
 	],
 	exitOnError: false
-	/*exceptionHandlers: [
-	 *  new winston.transports.File({
-	 *    filename: '../logs/exceptions.log'
-	 *  })
-	 *]*/
 });
 export const morganOptions: morgan.Options = {
 	stream: {

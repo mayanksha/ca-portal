@@ -21,7 +21,7 @@ export class Database {
 		config.database = database;
 		/*this.connection  = mysql.createConnection(config);*/
 		this.pool = mysql.createPool({
-			connectionLimit: 20,
+			connectionLimit: localConfig.connectionLimit,
 			host: localConfig.host,
 			port : localConfig.port,
 			user: localConfig.user,
@@ -43,7 +43,14 @@ export class Database {
 		 *});*/
 	}
 
-	private getPoolConnection(): Promise<mysql.PoolConnection> {
+	// getPoolConnection() can be made private for the case when you're
+	// not using MySQL TRANSACTIONS and where you just have normal SELECT/INSERT/UPDATE
+	// statements.
+	//
+	// For TRANSACTIONS, a single connection must be used for all the queries and 
+	// hence db.query shouldn't be used...since it fetches a new connection from the
+	// connection pool.
+	public getPoolConnection(): Promise<mysql.PoolConnection> {
 		return new Promise((resolve, reject) => {
 			this.pool.getConnection((err, connection) => {
 				if (err)
@@ -69,8 +76,15 @@ export class Database {
 			.catch(err => Promise.reject(err));
 	}
 
-
-
+	public getQueryResults(connection: mysql.Connection, sql: string, args?: any) {
+		return new Promise((resolve, reject) => {
+			connection.query(sql, args, (err, results, fields) => {
+				if (err)
+					return reject(err);
+				return resolve(results);
+			})
+		})
+	}
 	/*
 	 *   Below methods were suitable for non-pooled connection, i.e
 	 *   directly creating connections using mysql.createConnection
@@ -97,6 +111,7 @@ export class Database {
 	 *    } );
 	 *  });
 	 *}*/
+	
 	public escape(input: any) {
 		return SqlString.escape(input);
 	}

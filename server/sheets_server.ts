@@ -155,12 +155,12 @@ return this.db.query(query)
 		}
 	}
 }
-const DTS = new DatabaseToSheets();
-setTimeout(() => {
-	Object.keys(localConfig.events).forEach(e => {
-		DTS.updateSheet(e);
-	})
-}, 100);
+/*const DTS = new DatabaseToSheets();
+ *setTimeout(() => {
+ *  Object.keys(localConfig.events).forEach(e => {
+ *    DTS.updateSheet(e);
+ *  })
+ *}, 100);*/
 /*setInterval(() => {
  *  DTS.writeToSheet();
  *}, 5000);*/

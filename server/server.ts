@@ -123,9 +123,15 @@ app.post('/tasks', (req : express.Request, res : express.Response, next) => {
 app.use('/register', CompetitionRoutes.createRouter());
 app.post('/townscript', (req : express.Request, res : express.Response, next) => {
 	assert.ok(req.body.data);
-
+	let body: any;
 	// Townscript hands data over in stringified form
-	let body = JSON.parse(req.body.data);
+	try {
+		body = JSON.parse(req.body.data);
+	}
+	catch {
+		body = req.body.data;
+	}
+	
 	let data: any[];
 	if (Array.isArray(body)){
 		data = body;
@@ -145,6 +151,15 @@ app.post('/townscript', (req : express.Request, res : express.Response, next) =>
 		obj['ticketName'] = db.escape(e['ticketName']);
 		return obj;
 	})
+
+	const ref_code = data_new[0]['discountCode'];
+	console.log(ref_code);
+	if (ref_code.match(/CA/) === null){
+		logger.info("Not a CA User...Hence, Ignoring...");
+		res.status(200);
+		res.end();
+		return;
+	}
 	const length = data_new.length;
 	const incrementQuery = `UPDATE registrations.\`ca-registrations\` SET points = points + ${length * 50} WHERE referralID=${data_new[0]['discountCode']}`;
 
@@ -156,45 +171,49 @@ app.post('/townscript', (req : express.Request, res : express.Response, next) =>
 		if(i != length - 1)
 			mappingQuery += ',';
 	}
+	
+	let connection: mysql.PoolConnection;
 
-	console.log(incrementQuery);
-	console.log(mappingQuery);
-	db.query('START TRANSACTION')
+	db.getPoolConnection()
+		.then(conn => connection = conn)
 		.then(() => {
-			return db.query(incrementQuery)
-				.then(rows => rows)
-				.catch((err) => {
-					console.error(err);
-					return Promise.reject(err);
-				})
+			return connection.query(`START TRANSACTION@${ref_code}`);
+		})
+		.then((query) => {
+			logger.info(query.sql, `CaUser = ${ref_code}`);
+		})
+		.then(() => {
+			return db.getQueryResults(connection, incrementQuery)
 		})
 		.then((rows: any) => {
-			console.log(rows);
-			return rows.affectedRows;
-		})
-		.then((affectedRows) => {
-			if (affectedRows === 1)
-				return db.query(mappingQuery)
-			else return Promise.reject(new Error('ER_TOWSCRIPT_TRANSACTION_FAILED'));
+			logger.info(`incrementQuery@${ref_code}\n ${incrementQuery}`);
+			if (rows.affectedRows === 1)
+				return db.getQueryResults(connection, mappingQuery)
+			else return Promise.reject(new Error('ER_TOWNSCRIPT_TRANSACTION_FAILED'));
 		})
 		.then((rows) => {
-			return db.query('COMMIT')
-				.then(e => e)
-				.catch(err => Promise.reject(err));
+			logger.info(`mappingQuery@${ref_code}\n ${mappingQuery}`);
+			return db.getQueryResults(connection, 'COMMIT')
 		})
 		.then((rows) => {
 			res.status(200);
 			res.end();
-		})
+	  })
 		.catch((err) => {
 			process.nextTick(() => {
-				db.query('ROLLBACK')
+				db.getQueryResults(connection, 'ROLLBACK')
 					.then((rows) => {
-						console.log("ROLLBACK!", rows);
+						// Log everything since this is a critical issue
+						// either with the MySQL server or with some configuration
+						 
+						logger.error(`incrementQuery@${ref_code}\n ${incrementQuery}`);
+						logger.error(`mappingQuery@${ref_code}\n ${mappingQuery}`);
+						logger.error(`CaUser = ${ref_code}`);
+						logger.error(`Transaction_Error@${ref_code}`);
+						next(err);
 					})
 					.catch(next)
 			})
-			next(err);
 		})
 });
 
@@ -241,19 +260,26 @@ app.post('/registerCaUser',
 		const email = db.escape(req.body.email);
 		const name = db.escape(req.body.name);
 		const phone = db.escape(req.body.phone);
-		const query = `INSERT INTO registrations.\`ca-registrations_1\` (name, email, phone, facebookID) VALUES(${name}, ${email}, ${phone}, ${facebookID})`;
+		const query = `INSERT INTO registrations.\`ca-registrations\` (name, email, phone, facebookID) VALUES(${name}, ${email}, ${phone}, ${facebookID})`;
 
-		db.query('START TRANSACTION')
+		let connection: mysql.PoolConnection;
+		let referralID: string;
+		let CAquery: string;
+		db.getPoolConnection()
+			.then((conn) => connection = conn)
 			.then(() => {
-				return db.query(query)
+				return db.getQueryResults(connection, 'START TRANSACTION')
+			})
+			.then(() => {
+				return db.getQueryResults(connection, query)
 					.then((rows: any) => rows.insertId)
 					.catch((err) => Promise.reject(err))
 			})
 			.then((insertID: number) => {
 				const referralID = 'CA' + (1000 + 490 + insertID);
-				const CAquery = `UPDATE registrations.\`ca-registrations_1\` SET referralID=${db.escape(referralID)}
+				CAquery = `UPDATE registrations.\`ca-registrations\` SET referralID=${db.escape(referralID)}
 				WHERE id=${db.escape(insertID)}`;
-				return db.query(CAquery)
+				return db.getQueryResults(connection, CAquery)
 					.then((rows: any) => rows.affectedRows)
 					.catch(err => Promise.reject(err))
 			})
@@ -261,7 +287,7 @@ app.post('/registerCaUser',
 				if (affectedRows === 1){
 					res.send(true);
 					res.end();
-					return db.query('COMMIT')
+					return db.getQueryResults(connection, 'COMMIT')
 						.then((rows) => rows)
 						.catch(err => Promise.reject(err))
 				}
@@ -273,11 +299,17 @@ app.post('/registerCaUser',
 			})	
 			.catch(err => {
 				process.nextTick(() => {
-					db.query('ROLLBACK')
-						.then(() => logger.info(`Rollback @ SQLQuery: ${query}`))
+					db.getQueryResults(connection, 'ROLLBACK')
+						.then(() => {
+								logger.error(`insertCaRegQuery = ${query}`);
+							if (referralID){
+								logger.error(`CAquery@${referralID}\n ${CAquery}`);
+								logger.error(`Transaction_Error@${referralID}`);
+							}
+							next(err);
+						})
 						.catch(next);
 				})
-				next(err)
 			});
 	})
 
@@ -352,7 +384,6 @@ app.use('/*', (err, req, res, next) => {
 	if(err.name === 'SyntaxError' || 
 		err.code === 'ERR_ASSERTION' || 
 		err.code === 'ER_DATA_TOO_LONG'){
-		console.error(err.name);
 
 		// Bad HTTP Request
 		res.status(400);
@@ -364,8 +395,7 @@ app.use('/*', (err, req, res, next) => {
 		res.end('409 - BAD REQUEST');
 	}
 	else {
-		console.error(err);
-
+		
 		// Internal Server Error 
 		res.status(500);
 		res.end('500 - INTERNAL SERVER ERROR!');
